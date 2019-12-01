@@ -1,0 +1,102 @@
+body {
+    background-color: #171717;
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    margin: 0;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+audio {
+    width: 500px;
+}
+
+main {
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    flex: 1 0 auto;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.7);
+    }
+    50% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.7);
+    }
+}
+
+footer {
+    padding-top: 0;
+}
+
+.pulse {
+    animation-duration: 0s;
+    animation-fill-mode: both;
+    animation-iteration-count: infinite;
+    animation-name: pulse;
+}
+
+.tile {
+    background: linear-gradient( 90deg, #1db954, #1db954 10px, #282828 10px, #282828);
+    margin: 15px;
+    padding-left: 25px;
+}
+
+.circle {
+    width: 18px;
+    height: 18px;
+    border-radius: 14px;
+    background: #1db954;
+    margin-left: 5px;
+}
+
+#titleTile {
+    font-size: 20px;
+    text-align: center;
+}
+
+#searchfield {
+    height: 100%;
+    width: 35%;
+}
+
+#tempoIndicator {
+    display: flex;
+}
+
+#generalInfoContainer {
+    height: 350px;
+}
+
+#featuresContainer {
+    height: 350px;
+}
+
+#artistImage {
+    height: 240px;
+}
+
+#albumImage {
+    height: 274px;
+}
+
+#albumContainer {
+    height: 250px;
+}
+
+#artistContainer {
+    height: 216px;
+}
+
+.halfWidth {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}

@@ -1,1 +1,1 @@
-SpotifyInfo
+SpotifyInfo - Info for songs from Spotify

@@ -23,7 +23,7 @@ function AccountLabel(props) {
 function Default(props) {
     return e('div', {
         id: 'defaultContent'
-    }, 'Drag and drop a Spotify link over here. Artist, user, song or album!');
+    }, 'Drag and drop a Spotify link over here. Artist, user, song, playlist or album!');
 }
 
 function Artist(props) {

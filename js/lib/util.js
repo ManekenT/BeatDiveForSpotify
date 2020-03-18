@@ -1,8 +1,6 @@
+
 var keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
 var modes = ["Minor", "Major"];
-
-function empty_function() {
-}
 
 // HTTP-GET Request to url
 function get(url, header, callback, error_callback) {

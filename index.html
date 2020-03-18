@@ -1,120 +1,40 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+
+<html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <title>SpotifyInfo</title>
-    <link rel="shortcut icon" href="res/img/icon_black.png" type="image/png">
+    <meta charset="utf-8">
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.js" type="text/javascript"></script>
-    <script src="https://code.jquery.com/jquery-2.2.3.min.js" type="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js" type="text/javascript"></script>
+    <title>MusicInfo</title>
+    <meta name="description" content="Spotify content visualized">
+    <meta name="author" content="Tom Hohendorf">
 
-    <link type="text/css" rel="stylesheet" href="css/materialize.css" />
-    <link rel="stylesheet" href="css/stylesheet.css" type="text/css">
-    <script type="text/javascript" src="js/materialize.js"></script>
-    <script type="text/javascript" src="js/spotify-web-api.js"></script>
-    <script type="text/javascript" src="js/js-cookie.js"></script>
-    <script src="js/main.js" type="text/javascript"></script>
-    <script src="js/util.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+    <script src="js/lib/util.js"></script>
+    <script src="js/lib/spotify-web-api.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Arvo&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400&display=swap" rel="stylesheet">
+    <link href="//db.onlinewebfonts.com/c/01173b246d9d9ea808ea75a26b3b61bb?family=Circular+Spotify+Tx+T+Black" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>
-    <nav>
-        <div class="nav-wrapper spotify-background">
-            <div id="searchfield" class="left">
-                <form>
-                    <div class="input-field">
-                        <input name="id" id="search" type="search" required>
-                        <label class="label-icon" for="search"><i class="material-icons">search</i></label>
-                        <i class="material-icons">close</i>
-                    </div>
-                </form>
-            </div>
-            <a href="#!" class="brand-logo center">SpotifyInfo</a>
-            <ul class="right">
-                <li><a id="authorizeButton" href="#" class="waves-effect waves-light btn spotify-accent">Authorize</a></li>
-            </ul>
-        </div>
-    </nav>
-
-
-    <main>
-        <div class="card-panel tile" id="titleTile">Drag a Song to get some info!</div>
-        <div class="card tile">
-            <div class="card-content white-text">
-                <div id="generalInfoContainer" class="halfWidth ">
-                    <span class="card-title">SONG INFO</span>
-                    <span id='duration'>Duration:</span>
-                    <span id='popularity'>Popularity:</span>
-                    <span id='explicit'>Explicit:</span>
-                    <span id='trackNumber'>Track Number:</span>
-                    <span id='key'>Key:</span>
-                    <div id="tempoIndicator">
-                        <span id='tempo'>Tempo:</span>
-                        <div class='circle pulse' id="bpmIndicator"></div>
-                    </div>
-                    <span id='loudness'>Loudness:</span>
-                    <span id='timeSignature'>Time Signature:</span>
-                    <audio id='preview' controls></audio>
-                </div>
-            </div>
-        </div>
-    </main>
-    <footer class="page-footer spotify-background">
-    </footer>
-    <script id="featuresTemplate" type="text/x-handlebars-template">
-        <div class="card tile">
-            <div class="card-content white-text">
-                <div id="featuresContainer" class="halfWidth ">
-                    <span class="card-title">AUDIO FEATURES</span>
-                    <canvas id='chart'></canvas>
-                </div>
-            </div>
-        </div>
-    </script>
-    <script id="artistTemplate" type="text/x-handlebars-template">
-        <div class="card horizontal tile">
-            <div class="card-stacked">
-                <div class="card-content">
-                    <div id="artistContainer" class="halfWidth ">
-                        <span class="card-title">ARTIST INFO</span>
-                        <span>Name: {{name}}</span>
-                        <span>Followers: {{followers}}</span>
-                        <span>Genres: {{{genres}}}</span>
-                        <span>Popularity: {{popularity}}/100</span>
-                    </div>
-                </div>
-            </div>
-            <div class="card-image">
-                <img class="materialboxed" src={{{image}}} id="artistImage" />
-            </div>
-        </div>
-    </script>
-    <script id="albumTemplate" type="text/x-handlebars-template">
-        <div class="card horizontal tile">
-            <div class="card-stacked">
-                <div class="card-content">
-                    <div id="albumContainer" class="halfWidth">
-                        <span class="card-title">ALBUM INFO</span>
-
-                        <span id="albumName">Name: {{name}}</span>
-                        <span id="albumType">Type: {{type}}</span>
-                        <span id="albumTrackCount">No. of Tracks: {{trackCount}}</span>
-                        <span id="albumGenre">Genre: {{{genres}}}</span>
-                        <span id="albumPopularity">Popularity: {{popularity}}/100</span>
-                        <span id="releaseDate">Release Date: {{release_date}}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="card-image">
-                <img class="materialboxed" src={{{image}}} id="albumImage" />
-            </div>
-        </div>
-        </div>
-    </script>
+    <div id="header">
+        <div id="logoText">MusicInfo</div>
+        <div id="loginButtonContainer"></div>
+    </div>
+    
+    <div id="contentContainer"></div>
+    
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    
+    <!-- Load our React component. -->
+    <script src="js/components.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

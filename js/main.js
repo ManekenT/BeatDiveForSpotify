@@ -1,8 +1,6 @@
 'use strict';
 
 const client_id = '003e1f0c81d54149b97761a80f6a7270';
-const redirect_uri = 'http://' + window.location.hostname + ':' + window.location.port + '/';
-
 const authCookie = 'authCode'
 var authCode;
 
@@ -56,7 +54,7 @@ window.onload = function () {
     } else {
         // Erster Pageload, Login ermöglichen
         ReactDOM.render(React.createElement(LoginButton, {
-            onClick: () => { window.location.href = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&redirect_uri=" + redirect_uri + "&response_type=token"; }
+            onClick: () => { window.location.href = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&redirect_uri=" + window.location.origin + "&response_type=token"; }
         }), document.getElementById('loginButtonContainer'));
     }
 

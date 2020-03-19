@@ -2,28 +2,15 @@
 
 const e = React.createElement;
 
-function LoginButton(props) {
-    return e('button', {
-        id: 'loginButton',
-        onClick: props.onClick
-    }, 'Login')
-}
-
 function AccountLabel(props) {
-    return e('div', {
-        id: 'account_label'
-    }, e('img', {
-        id: 'account_image',
-        src: props.image_url
-    }), e('div', {
-        id: 'account_name'
-    }, props.display_name));
-}
-
-function Default(props) {
-    return e('div', {
-        id: 'defaultContent'
-    }, 'Drag and drop a Spotify link over here. Artist, user, song, playlist or album!');
+    return e(React.Fragment, {},
+        e('img', {
+            id: 'accountImage',
+            src: props.image_url
+        }),
+        e('div', {
+            id: 'accountName'
+        }, props.display_name));
 }
 
 function Artist(props) {
@@ -90,12 +77,17 @@ function ContentHeader(props) {
     }
     return e('div', {
         id: 'contentHeaderContainer'
-    }, e('div', {
-        id: 'contentType'
-    }, props.contentType),
+    },
+        e('div', {
+            id: 'contentType'
+        }, props.contentType),
         e('div', {
             className: 'contentHeader'
-        }, imageElement, e('div', {
-            className: 'contentTitle item'
-        }, props.title)));
+        },
+            imageElement,
+            e('div', {
+                className: 'contentTitle item'
+            }, props.title)
+        )
+    );
 }

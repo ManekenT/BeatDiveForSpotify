@@ -21,10 +21,15 @@
 <body>
     <div id="header">
         <div id="logoText">MusicInfo</div>
-        <div id="loginButtonContainer"></div>
+        <div id="accountSection">
+            <button id='currentSongButton' class="button" onclick="loadCurrentSong()">Load current song</button>
+            <div id="accountLabelContainer"></div>
+        </div>
     </div>
     
-    <div id="contentContainer"></div>
+    <div id="contentContainer">
+        <div id="defaultContent">Drag and drop a Spotify link over here. Artist, user, song, playlist or album!</div>
+    </div>
     
     <!-- Load React. -->
     <!-- Note: when deploying, replace "development.js" with "production.min.js". -->

@@ -16,9 +16,34 @@ button {
     font-family: 'Arvo', serif;
 }
 
-#loginButton:focus {
-    outline-color: var(--color-primary-accent);
-    outline-width: thick;
+.button {
+    margin-right: 40px;
+    background-color: var(--color-dark);
+    border: 3px solid var(--color-light);
+    color: var(--color-light);
+    font-size: 20px;
+    font-weight: bold;
+    outline-width: 0;
+}
+
+.button:focus {
+    border-style: dashed;
+}
+
+.button:hover {
+    background-color: var(--color-light);
+    color: var(--color-dark);
+}
+
+.button:active {
+    background-color: var(--color-light);
+    color: var(--color-dark);
+    transform: scale(0.95, 0.95);
+}
+
+#currentSongButton {
+    width: 200px;
+    height: 50px;
 }
 
 #header {
@@ -37,43 +62,25 @@ button {
     margin-left: 20px;
 }
 
-#loginButton {
-    width: 120px;
-    height: 40px;
-    margin-right: 40px;
-    border-radius: 3px;
-    background-color: var(--color-light);
-    border: 0px;
-    color: var(--color-dark);
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#account_name {
+#accountName {
     font-size: 20px;
     font-weight: bold;
     margin-right: 40px;
     margin-left: 20px;
 }
 
-#account_image {
+#accountImage {
     height: 50px;
 }
 
-#account_label {
+#accountLabelContainer {
     display: flex;
     align-items: center;
 }
 
-#loginButton:hover {
-    background-color: var(--color-primary);
-    color: var(--color-light);
-}
-
-#loginButton:active {
-    background-color: var(--color-primary);
-    color: var(--color-light);
-    transform: scale(0.95, 0.95);
+#accountSection {
+    display: flex;
+    align-items: center;
 }
 
 #contentContainer {
@@ -87,48 +94,49 @@ button {
     color: var(--color-dark);
     font-size: 35px;
     font-weight: bolder;
-    position: fixed; /* or absolute */
+    position: fixed;
+    /* or absolute */
     top: 50%;
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
-  }
+}
 
-  .contentImage {
+.contentImage {
     width: 200px;
     border-style: solid;
     border-color: var(--color-light);
-  }
-  
-  .contentHeader {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-wrap: wrap;
-      padding-top: 20px;
-      padding-bottom: 20px;
-  }
+}
 
-  .contentTitle {
-      font-size: 120px;
-      font-weight: bold;
-      text-align: center;
-  }
+.contentHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
 
-  #contentHeaderContainer {
+.contentTitle {
+    font-size: 120px;
+    font-weight: bold;
+    text-align: center;
+}
+
+#contentHeaderContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
+}
 
-  #contentType {
-      color: var(--color-light-accent);
-      font-family: 'Montserrat', sans-serif;
-      font-size: 30px;
-      font-weight: lighter;
-  }
+#contentType {
+    color: var(--color-light-accent);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    font-weight: lighter;
+}
 
-  .item {
-      margin: 10px;
-  }
+.item {
+    margin: 10px;
+}

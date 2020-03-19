@@ -1,6 +1,7 @@
 'use strict';
 
-const client_id = '003e1f0c81d54149b97761a80f6a7270';
+const clientId = '003e1f0c81d54149b97761a80f6a7270';
+const userScopes = 'user-read-currently-playing';
 const authCookie = 'authCode'
 var authCode;
 
@@ -18,15 +19,17 @@ window.addEventListener("drop", function (e) {
 
 window.onload = function () {
     // URL Argumente parsen
-    var args = parseFragment();
+    var fragmentArgs = parseFragment();
+    var queryArgs = parseQuery();
 
+    // Authentifizierung
     if (Cookies.get(authCookie)) {
         // Es ist bereits ein AuthToken aus einer früheren Autorisierung vorhanden
         authCode = Cookies.get(authCookie);
-    } else if (args['access_token']) {
+    } else if (fragmentArgs['access_token']) {
         // Es ist der erste Pageload nach der Authentifizierung
-        authCode = args['access_token'];
-        var expireTime = args['expires_in'];
+        authCode = fragmentArgs['access_token'];
+        var expireTime = fragmentArgs['expires_in'];
         var expireTime = new Date(new Date().getTime() + (expireTime - 60) * 1000);
         Cookies.set(authCookie, authCode, {
             expires: expireTime
@@ -41,54 +44,72 @@ window.onload = function () {
                 if (error) {
                     // Token war nicht mehr gültig, alle referenzen entfernen und Login ermöglichen
                     Cookies.remove(authCookie);
-                    window.location.href = redirect_uri;
+                    authorize();
                 } else {
                     // User wurde erfolgreich authentifiziert
                     ReactDOM.render(React.createElement(AccountLabel, {
                         display_name: me.display_name,
                         image_url: me.images[0].url
-                    }), document.getElementById('loginButtonContainer'));
+                    }), document.getElementById('accountLabelContainer'));
                 }
             }
         );
     } else {
         // Erster Pageload, Login ermöglichen
-        ReactDOM.render(React.createElement(LoginButton, {
-            onClick: () => { window.location.href = "https://accounts.spotify.com/authorize?client_id=" + client_id + "&redirect_uri=" + window.location.origin + "&response_type=token"; }
-        }), document.getElementById('loginButtonContainer'));
+        authorize();
     }
 
-    // Default Content laden
-    ReactDOM.render(React.createElement(Default, {}), document.getElementById('contentContainer'));
+    // Content zur ID laden
+    var id = queryArgs['id'];
+    var type = queryArgs['type'];
+    console.log(id);
+    console.log(type);
+    if (id && type) {
+        if (type == 'artist') {
+            processArtist(id);
+        } else if (type == 'track') {
+            processTrack(id);
+        } else if (type == 'album') {
+            processAlbum(id);
+        } else if (type == 'user') {
+            processUser(id);
+        } else if (type == 'playlist') {
+            processPlaylist(id);
+        }
+    }
+}
+
+function authorize() {
+    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes;
 }
 
 function processDroppedContent(droppedContent) {
     var urlPart = droppedContent.slice(0, 25);
-    if(urlPart != 'https://open.spotify.com/') {
+    if (urlPart != 'https://open.spotify.com/') {
         console.log('Not a valid spotify url: ' + urlPart);
         return;
     }
     var infoPart = droppedContent.slice(25, droppedContent.length);
-    if(infoPart.startsWith('artist')) {
+    if (infoPart.startsWith('artist')) {
         var artistId = infoPart.slice(7, infoPart.length);
         console.log('Dropped artist id: ' + artistId);
-        processArtist(artistId);
-    } else if(infoPart.startsWith('track')) {
+        loadContent(artistId, 'artist');
+    } else if (infoPart.startsWith('track')) {
         var trackId = infoPart.slice(6, infoPart.length);
         console.log('Dropped track id: ' + trackId);
-        processTrack(trackId);
-    } else if(infoPart.startsWith('album')) {
+        loadContent(trackId, 'track');
+    } else if (infoPart.startsWith('album')) {
         var albumId = infoPart.slice(6, infoPart.length);
         console.log('Dropped album id: ' + albumId);
-        processAlbum(albumId);
-    } else if(infoPart.startsWith('user')) {
+        loadContent(albumId, 'album');
+    } else if (infoPart.startsWith('user')) {
         var userId = infoPart.slice(5, infoPart.length);
         console.log('Dropped user id: ' + userId);
-        processUser(userId);
-    } else if(infoPart.startsWith('playlist')) {
+        loadContent(userId, 'user');
+    } else if (infoPart.startsWith('playlist')) {
         var playlistId = infoPart.slice(9, infoPart.length);
         console.log('Dropped playlist id: ' + playlistId);
-        processPlaylist(playlistId);
+        loadContent(playlistId, 'playlist');
     }
 }
 
@@ -145,4 +166,16 @@ function processAlbum(id) {
             contentType: 'Album'
         }), document.getElementById('contentContainer'));
     });
+}
+
+function loadCurrentSong() {
+    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+        if (track.item) {
+            loadContent(track.item.id, 'track');
+        }
+    })
+}
+
+function loadContent(id, type) {
+    window.location.href = window.location.origin + '?id=' + id + '&type=' + type;
 }

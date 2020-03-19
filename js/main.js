@@ -76,6 +76,9 @@ window.onload = function () {
         } else if (type == 'playlist') {
             processPlaylist(id);
         }
+    } else {
+        // Kein Content vorhanden, default anzeigen
+        ReactDOM.render(React.createElement(Default, {}), document.getElementById('contentContainer'));
     }
 }
 
@@ -118,7 +121,7 @@ function processArtist(id) {
         ReactDOM.render(React.createElement(Artist, {
             name: artist.name,
             images: artist.images,
-            external_urls: artist.external_urls,
+            urls: artist.external_urls,
             followers: artist.followers.total,
             genres: artist.genres,
             popularity: artist.popularity,

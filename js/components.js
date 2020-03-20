@@ -138,7 +138,8 @@ function ArtistLinks(props) {
 
 function Popularity(props) {
     return e('div', {
-        id: 'popularityLabel'
+        id: 'popularityLabel',
+        className: 'sectionItem'
     },
         e('div', {}, `${props.followers} followers and`),
         e(ProgressBar, {
@@ -149,15 +150,15 @@ function Popularity(props) {
 }
 function ProgressBar(props) {
     return e('div', {
-        className: 'progressBar sectionItem'
+        className: 'progressBar',
     },
-        e('div', {
+        e('span', {
             className: 'progressBarValue',
             style: {
                 width: `${props.value}%`
             }
-        },
-            e('span', {}, `${props.value}%`)));
+        }, `${props.value}%`)
+    );
 }
 
 function GenreTags(props) {

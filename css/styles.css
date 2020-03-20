@@ -70,6 +70,7 @@ a:focus {
 #logoText {
     font-size: 40px;
     flex-grow: 1;
+    margin: 0 20px;
 }
 
 #accountName {
@@ -149,26 +150,19 @@ a:focus {
 .progressBar {
     width: 30%;
     height: 30px;
-    background-color: var(--color-dark);
+    background-color: transparent;
     border: 3px solid var(--color-light);
-}
-
-.progressBarValue {
-    background-color: var(--color-light);
-    color: var(--color-dark);
     position: relative;
-    height: 30px;
+    text-align: start;
+    margin: 20px;
 }
 
-.progressBarValue span {
+.progressBar .progressBarValue {
+    background-color: var(--color-light);
     display: inline-block;
-    position: absolute;
-    width: 100%;
-    left: 0;
     height: 100%;
-    display: inline-flex;
-    align-items: left;
-    justify-content: center;
+    color: var(--color-dark);
+    text-align: center;
 }
 
 .sectionItem {
@@ -183,6 +177,9 @@ a:focus {
 
 .tagContainer {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .seperator {

@@ -42,9 +42,10 @@ window.onload = function () {
         spotifyApi.getMe({},
             (error, me) => {
                 if (error) {
+                    console.log(error);
                     // Token war nicht mehr gültig, alle referenzen entfernen und Login ermöglichen
                     Cookies.remove(authCookie);
-                    authorize();
+                    //authorize();
                 } else {
                     // User wurde erfolgreich authentifiziert
                     ReactDOM.render(React.createElement(AccountLabel, {

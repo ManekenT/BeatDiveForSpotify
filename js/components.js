@@ -51,7 +51,8 @@ function Artist(props) {
         e('h2', {}, 'artist links'),
         e(ArtistLinks, {
             urls: props.urls
-        })
+        }),
+        e('div', { className: 'seperator' })
     );
 }
 

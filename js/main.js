@@ -50,7 +50,7 @@ window.onload = function () {
                     ReactDOM.render(React.createElement(AccountLabel, {
                         display_name: me.display_name,
                         image_url: me.images[0].url
-                    }), document.getElementById('accountLabelContainer'));
+                    }), document.getElementById('accountLabel'));
                 }
             }
         );
@@ -118,17 +118,24 @@ function processDroppedContent(droppedContent) {
 
 function processArtist(id) {
     spotifyApi.getArtist(id, {}, (error, artist) => {
-        ReactDOM.render(React.createElement(Artist, {
-            name: artist.name,
-            images: artist.images,
-            urls: artist.external_urls,
-            followers: artist.followers.total,
-            genres: artist.genres,
-            popularity: artist.popularity,
-            contentType: 'Artist'
-        }), document.getElementById('contentContainer'));
+        spotifyApi.getArtistTopTracks(id, 'from_token', {}, (error, tracks) => {
+            spotifyApi.getRecommendations({
+                seed_artists: id
+            }, (error, recommendations) => {
+                ReactDOM.render(React.createElement(Artist, {
+                    name: artist.name,
+                    images: artist.images,
+                    urls: artist.external_urls,
+                    followers: artist.followers.total,
+                    genres: artist.genres,
+                    popularity: artist.popularity,
+                    contentType: 'Artist',
+                    tracks: tracks.tracks,
+                    recommendations: recommendations.tracks
+                }), document.getElementById('contentContainer'));
+            });
+        });
     });
-    // track recommendation for artist
 }
 
 function processTrack(id) {
@@ -176,6 +183,36 @@ function loadCurrentSong() {
         if (track.item) {
             loadContent(track.item.id, 'track');
         }
+    })
+}
+
+function loadCurrentAlbum() {
+    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+        if (track.item) {
+            loadContent(track.item.album.id, 'album');
+        }
+    })
+}
+
+function loadCurrentArtist() {
+    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+        if (track.item) {
+            loadContent(track.item.artists[0].id, 'artist');
+        }
+    })
+}
+
+function loadCurrentPlaylist() {
+    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+        if (track.context && track.context.type == 'playlist') {
+            processDroppedContent(track.context.external_urls['spotify']);
+        }
+    })
+}
+
+function loadCurrentUser() {
+    spotifyApi.getMe({}, (error, user) => {
+        loadContent(user.id, 'user');
     })
 }
 

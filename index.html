@@ -20,11 +20,13 @@
 
 <body>
     <div id="header">
-        <div id="logoText">MusicInfo</div>
-        <div id="accountSection">
-            <button id='currentSongButton' class="button" onclick="loadCurrentSong()">Load current song</button>
-            <div id="accountLabelContainer"></div>
-        </div>
+        <div id="logoText" class="item">MusicInfo</div>
+        <div>load current:</div>
+        <button class='headerButton item' onclick="loadCurrentSong()" class="item">song</button>
+        <button class='headerButton item' onclick="loadCurrentAlbum()" class="item">album</button>
+        <button class='headerButton item' onclick="loadCurrentArtist()" class="item">artist</button>
+        <button class='headerButton item' onclick="loadCurrentPlaylist()" class="item">playlist</button>
+        <button id="accountLabel" onclick="loadCurrentUser()" class="item"></button>
     </div>
 
     <div id="contentContainer"></div>

@@ -8,88 +8,86 @@
 }
 
 body {
-    margin: 0;
-    font-family: 'Arvo', serif;
-    background-color: var(--color-light);
-    color: var(--color-dark);
+    margin: 0px;
+    background-color: var(--color-dark);
+    color: var(--color-light);
     font-family: 'Montserrat', sans-serif;
+}
+
+h2 {
+    margin: 10px 0;
 }
 
 button {
     font-family: 'Arvo', serif;
-}
-
-.button {
-    margin-right: 40px;
     background-color: var(--color-dark);
-    border: 3px solid var(--color-light);
+    border: 2px solid var(--color-light);
     color: var(--color-light);
-    font-size: 20px;
-    font-weight: bold;
     outline-width: 0;
+    font-weight: bolder;
 }
 
-.button:focus {
-    border-style: dashed;
+.headerButton {
+    font-size: 15px;
+    height: 40px;
 }
 
-.button:hover {
+button:hover {
     background-color: var(--color-light);
     color: var(--color-dark);
 }
 
-.button:active {
+button:active {
     background-color: var(--color-light);
     color: var(--color-dark);
     transform: scale(0.95, 0.95);
 }
 
-#currentSongButton {
-    width: 200px;
-    height: 50px;
+button:focus {
+    border-style: dashed;
+}
+
+a {
+    color: var(--color-light);
+    outline-width: 0;
+}
+
+a:focus {
+    border-style: dashed;
 }
 
 #header {
     width: 100%;
-    height: 80px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     background-color: var(--color-dark);
     color: var(--color-light);
     font-family: 'Arvo', serif;
+    font-weight: bolder;
 }
 
 #logoText {
     font-size: 40px;
-    font-weight: bolder;
-    margin-left: 20px;
+    flex-grow: 1;
 }
 
 #accountName {
     font-size: 20px;
     font-weight: bold;
-    margin-right: 40px;
-    margin-left: 20px;
+    margin: 0 10px;
 }
 
 #accountImage {
     height: 50px;
 }
 
-#accountLabelContainer {
+#accountLabel {
     display: flex;
     align-items: center;
-}
-
-#accountSection {
-    display: flex;
-    align-items: center;
-}
-
-#contentContainer {
-    width: 100%;
-    height: 100%;
+    border: 3px solid var(--color-light);
+    outline-width: 0px;
+    padding: 0;
 }
 
 #defaultContent {
@@ -104,13 +102,13 @@ button {
     transform: translate(-50%, -50%);
 }
 
-.contentImage {
+.titleImage {
     width: 200px;
     border-style: solid;
     border-color: var(--color-light);
 }
 
-.contentHeader {
+.title {
     width: 100%;
     display: flex;
     align-items: center;
@@ -118,88 +116,104 @@ button {
     flex-wrap: wrap;
     padding-top: 20px;
     padding-bottom: 20px;
-    color: var(--color-light);
 }
 
-.contentTitle {
+.titleText {
     font-size: 120px;
     font-weight: bold;
     text-align: center;
-}
-
-#contentHeaderContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--color-dark);
 }
 
 #contentType {
     color: var(--color-light-accent);
     font-size: 30px;
     font-weight: lighter;
+    text-align: center;
 }
 
 .item {
     margin: 10px;
 }
 
-#artistGeneralInfoSection {
-    width: 50%;
-}
-
-.section {
-    border-left: 5px solid var(--color-dark);
-    padding: 20px;
-    margin-left: 20px;
-    margin-top: 20px;
-}
-
-.sectionHeader {
-    text-transform: uppercase;
-    font-size: 40px;
-}
-
-.textProperty {
+#contentContainer {
+    padding-bottom: 20px;
     width: 100%;
-    padding-left: 30px;
-    padding-right: 30px;
-    margin-top: 20px;
+    margin: 0 auto;
     font-size: 25px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
 }
 
-.barProperty {
-    display: inline-flex;
+.progressBar {
+    width: 30%;
+    height: 30px;
+    background-color: var(--color-dark);
+    border: 3px solid var(--color-light);
 }
 
-a {
+.progressBarValue {
+    background-color: var(--color-light);
     color: var(--color-dark);
+    position: relative;
+    height: 30px;
 }
 
-#artistTopPanel {
+.progressBarValue span {
+    display: inline-block;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    height: 100%;
+    display: inline-flex;
+    align-items: left;
+    justify-content: center;
+}
+
+.sectionItem {
+    margin: 20px;
+}
+
+.tag {
+    border: 3px solid var(--color-light);
+    font-size: 25px;
+    padding: 5px;
+}
+
+.tagContainer {
+    display: flex;
+}
+
+.seperator {
+    width: 3%;
+    height: 0px;
+    border: 1px solid var(--color-light);
+    margin: 20px 0;
+}
+
+.trackLabel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    border: 3px solid var(--color-light);
+}
+
+.trackImage {
+    width: 100px;
+}
+
+.trackCollection {
     display: flex;
     flex-wrap: wrap;
-    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
 }
 
-progress {
-    width: 100%;
-    height: 30px;
-    margin-left: 10px;
-    color: var(--color-light);
-    /* Reset the default appearance */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    /* Get rid of default border in Firefox. */
-    border: none;
-}
-
-progress::-webkit-progress-value {
-    background: var(--color-dark);
-}
-
-progress::-webkit-progress-bar {
-    background-color: var(--color-light);
-    border: 3px solid var(--color-dark);
+#popularityLabel {
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

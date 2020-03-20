@@ -6,10 +6,10 @@ function AccountLabel(props) {
     return e(React.Fragment, {},
         e('img', {
             id: 'accountImage',
-            src: props.image_url
+            src: props.image_url,
         }),
         e('div', {
-            id: 'accountName'
+            id: 'accountName',
         }, props.display_name));
 }
 
@@ -29,18 +29,27 @@ function Artist(props) {
             image: image,
             contentType: props.contentType
         }),
-        e('div', {
-            id: 'artistTopPanel'
-        },
-            e(ArtistGeneralInfoSection, {
-                genres: props.genres,
-                followers: props.followers,
-                popularity: props.popularity
-            }),
-            e(ArtistRecommendationsSection, {
 
-            })),
-        e(ArtistLinksSection, {
+        e(GenreTags, {
+            genres: props.genres
+        }),
+        e(Popularity, {
+            popularity: props.popularity,
+            followers: props.followers
+        }),
+        e('div', { className: 'seperator' }),
+        e('h2', {}, 'top tracks'),
+        e(Tracklist, {
+            tracks: props.tracks
+        }),
+        e('div', { className: 'seperator' }),
+        e('h2', {}, 'spotify recommendations'),
+        e(Tracklist, {
+            tracks: props.recommendations
+        }),
+        e('div', { className: 'seperator' }),
+        e('h2', {}, 'artist links'),
+        e(ArtistLinks, {
             urls: props.urls
         })
     );
@@ -93,121 +102,94 @@ function Album(props) {
 function ContentHeader(props) {
     if (props.image) {
         var imageElement = e('img', {
-            className: 'contentImage item',
+            className: 'titleImage item',
             src: props.image
         })
     }
-    return e('div', {
-        id: 'contentHeaderContainer'
-    },
+    return e(React.Fragment, {},
         e('div', {
-            id: 'contentType'
+            id: 'contentType',
+            className: 'dark'
         }, props.contentType),
         e('div', {
-            className: 'contentHeader'
+            className: 'title dark'
         },
             imageElement,
-            e('div', {
-                className: 'contentTitle item'
+            e('h1', {
+                className: 'titleText item'
             }, props.title)
         )
     );
 }
 
-function ArtistGeneralInfoSection(props) {
-    return e('div', {
-        id: 'artistGeneralInfoSection',
-        className: 'section'
-    },
-        e(SectionHeader, {
-            title: 'General Info'
-        }),
-        e(TextProperty, {
-            title: 'Genres',
-            text: props.genres
-        }),
-        e(TextProperty, {
-            title: 'Followers',
-            text: props.followers
-        }),
-        e(BarProperty, {
-            title: 'Popularity',
-            value: props.popularity
-        })
-    );
-}
-
-function ArtistLinksSection(props) {
+function ArtistLinks(props) {
     var urlComponents = [];
     for (var key in props.urls) {
         var value = props.urls[key];
-        urlComponents.push(e(UrlProperty, {
-            title: key,
-            text: value,
+        urlComponents.push(e('a', {
+            href: value,
             key: key
-        }))
+        }, key));
     }
+    return e(React.Fragment, {}, urlComponents);
+}
+
+
+function Popularity(props) {
     return e('div', {
-        id: 'artistUrlSection',
-        className: 'section'
+        id: 'popularityLabel'
     },
-        e(SectionHeader, {
-            title: 'Links'
+        e('div', {}, `${props.followers} followers and`),
+        e(ProgressBar, {
+            value: props.popularity
         }),
-        urlComponents
+        e('div', {}, 'popularity')
     );
 }
-
-function ArtistRecommendationsSection(props) {
+function ProgressBar(props) {
     return e('div', {
-        id: 'artistRecommendationsSection',
-        className: 'section'
-    },
-        e(SectionHeader, {
-            title: 'Recommendations'
-        }),
-    );
-}
-
-function SectionHeader(props) {
-    return e('div', {
-        className: 'sectionHeader'
-    }, props.title);
-}
-
-function TextProperty(props) {
-    return e('div', {
-        className: 'textProperty'
-    }, `${props.title}: ${props.text}`);
-}
-
-function UrlProperty(props) {
-    return e('div', {
-        className: 'textProperty'
-    },
-        `${props.title}: `,
-        e('a', {
-            href: props.text
-        }, props.text)
-    );
-}
-
-function BarProperty(props) {
-    const progressStyle = {
-        width: `${props.value}%`,
-    };
-
-    return e('div', {
-        className: 'textProperty barProperty'
+        className: 'progressBar sectionItem'
     },
         e('div', {
-
+            className: 'progressBarValue',
+            style: {
+                width: `${props.value}%`
+            }
         },
-            `${props.title}:`
-        ),
-        e('progress', {
-            max: 100,
-            value: props.value
-        }, props.value
-        ));
+            e('span', {}, `${props.value}%`)));
+}
+
+function GenreTags(props) {
+    var genreTagComponents = [];
+    for (var key in props.genres) {
+        var value = props.genres[key];
+        genreTagComponents.push(e('div', {
+            className: 'tag item',
+            key: key
+        }, value));
+    }
+    return e('div', {
+        className: 'tagContainer sectionItem'
+    }, genreTagComponents);
+}
+
+function Tracklist(props) {
+    var trackComponents = [];
+    for (var key in props.tracks) {
+        var value = props.tracks[key];
+        trackComponents.push(e('div', {
+            className: 'trackLabel item',
+            key: key
+        },
+            e('img', {
+                className: 'trackImage',
+                src: value.album.images[0].url,
+            }),
+            e('div', {
+                className: 'item'
+            }, value.name)));
+    }
+    return e('div', {
+        className: 'trackCollection sectionItem'
+    }, trackComponents);
 }

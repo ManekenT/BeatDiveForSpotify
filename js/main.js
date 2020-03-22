@@ -105,7 +105,7 @@ function authorize() {
     } else if(queryArgs['state']) {
         stateString = '&state=' + queryArgs['state'];
     }
-    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString + '&show_dialog=true';
+    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
 }
 
 function showLoginAppeal() {

@@ -1,1 +1,1 @@
-SpotifyInfo - Spotify content visualized
+MusicInfo - Spotify content visualized

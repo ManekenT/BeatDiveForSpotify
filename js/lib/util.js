@@ -15,15 +15,15 @@ function parseFragment() {
 }
 
 function parseQuery() {
-	var hash = location.search.replace(/\?/g, '');
-	var all = hash.split('&');
-	var args = {};
-	all.forEach(function (keyvalue) {
-		var kv = keyvalue.split('=');
-		var key = kv[0];
-		args[key] = kv[1];
-	});
-	return args;
+    var hash = location.search.replace(/\?/g, '');
+    var all = hash.split('&');
+    var args = {};
+    all.forEach(function (keyvalue) {
+        var kv = keyvalue.split('=');
+        var key = kv[0];
+        args[key] = kv[1];
+    });
+    return args;
 }
 
 function msToDuration(ms) {
@@ -41,4 +41,12 @@ function getExplicit(explicit) {
         return "Yes";
     }
     return "No";
+}
+
+function parseStateString(string) {
+    state = string.split('_');
+    return {
+        id: state[0],
+        type: state[1]
+    }
 }

@@ -4,6 +4,8 @@ const clientId = '003e1f0c81d54149b97761a80f6a7270';
 const userScopes = 'user-read-currently-playing';
 const authCookie = 'authCode'
 var authCode;
+var fragmentArgs;
+var queryArgs;
 
 var spotifyApi = new SpotifyWebApi();
 
@@ -19,8 +21,8 @@ window.addEventListener("drop", function (e) {
 
 window.onload = function () {
     // URL Argumente parsen
-    var fragmentArgs = parseFragment();
-    var queryArgs = parseQuery();
+    fragmentArgs = parseFragment();
+    queryArgs = parseQuery();
 
     // Authentifizierung
     if (Cookies.get(authCookie)) {
@@ -63,8 +65,18 @@ window.onload = function () {
     }
 
     // Content zur ID laden
-    var id = queryArgs['id'];
-    var type = queryArgs['type'];
+    var id;
+    var type;
+    if(queryArgs['id'] && queryArgs['type']) {
+        id = queryArgs['id'];
+        type = queryArgs['type'];
+    } else if(fragmentArgs['state']) {
+        var stateObject = parseStateString(fragmentArgs['state']);
+        id = stateObject.id;
+        type = stateObject.type;
+        console.log(id);
+        console.log(type);
+    }
     if (id && type) {
         if (type == 'artist') {
             processArtist(id);
@@ -84,7 +96,13 @@ window.onload = function () {
 }
 
 function authorize() {
-    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes;
+    var stateString = '';
+    if(queryArgs['id'] && queryArgs['type']) {
+        stateString = '&state=' + queryArgs['id'] + '_' + queryArgs['type'];
+    } else if(queryArgs['state']) {
+        stateString = '&state=' + queryArgs['state'];
+    }
+    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
 }
 
 function showLoginAppeal() {

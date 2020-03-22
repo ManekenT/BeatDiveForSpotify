@@ -84,7 +84,7 @@ window.onload = function () {
 }
 
 function authorize() {
-    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + "&show_dialog=true";
+    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes;
 }
 
 function showLoginAppeal() {
@@ -92,13 +92,15 @@ function showLoginAppeal() {
 }
 
 function handleApiError(error) {
-    if(error.status == 401) {
+    if (error.status == 401) {
         // Auth Code is not valid anymore
         Cookies.remove(authCookie);
         authorize();
+    } else if (error.status == 0) {
+        // Some plugin is blocking access to the spotify api
+        ReactDOM.render(React.createElement(BlockerInfo, {}), document.getElementById('contentContainer'));
     } else {
         console.error(error);
-        // show info box
     }
 }
 
@@ -163,7 +165,7 @@ function processArtist(id) {
 
 function processTrack(id) {
     spotifyApi.getTrack(id, {}, (error, track) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -176,7 +178,7 @@ function processTrack(id) {
 
 function processPlaylist(id) {
     spotifyApi.getPlaylist(id, {}, (error, playlist) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -189,7 +191,7 @@ function processPlaylist(id) {
 
 function processUser(id) {
     spotifyApi.getUser(id, {}, (error, user) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -202,7 +204,7 @@ function processUser(id) {
 
 function processAlbum(id) {
     spotifyApi.getAlbum(id, {}, (error, album) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -215,7 +217,7 @@ function processAlbum(id) {
 
 function loadCurrentSong() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -227,7 +229,7 @@ function loadCurrentSong() {
 
 function loadCurrentAlbum() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -239,7 +241,7 @@ function loadCurrentAlbum() {
 
 function loadCurrentArtist() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -251,7 +253,7 @@ function loadCurrentArtist() {
 
 function loadCurrentPlaylist() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }
@@ -263,7 +265,7 @@ function loadCurrentPlaylist() {
 
 function loadCurrentUser() {
     spotifyApi.getMe({}, (error, user) => {
-        if(error) {
+        if (error) {
             handleApiError(error)
             return;
         }

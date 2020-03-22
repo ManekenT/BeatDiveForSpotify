@@ -34,6 +34,20 @@ function LoginAppeal(props) {
     );
 }
 
+function BlockerInfo() {
+    return e('div', {
+        className: 'overlay'
+    },
+        e('div', {},
+            'Something is blocking requests to the spotify api. Please allow this site to access ',
+            e('div', {
+                className: 'markedText'
+            }, 'api.spotify.com'),
+            ' and refresh the page. Thanks!'
+        )
+    );
+}
+
 function Artist(props) {
     if (props.images[0]) {
         var image = props.images[0].url;

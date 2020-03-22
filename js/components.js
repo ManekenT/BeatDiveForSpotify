@@ -19,6 +19,21 @@ function Default(props) {
     }, 'Drag and drop a Spotify link over here. Artist, user, song, playlist or album!');
 }
 
+function LoginAppeal(props) {
+    return e('div', {
+        className: 'overlay'
+    },
+        e('div', {
+            className: 'item'
+        }, 'Please authorize this site with spotify. It doesn\'t really make sense without access to the Spotify Api.'),
+        e('button', {
+            className: 'item',
+            id: 'authorizeButton',
+            onClick: authorize
+        }, 'Authorize')
+    );
+}
+
 function Artist(props) {
     if (props.images[0]) {
         var image = props.images[0].url;
@@ -27,7 +42,7 @@ function Artist(props) {
         e(ContentHeader, {
             title: props.name,
             image: image,
-            contentType: props.contentType
+            contentType: 'Artist'
         }),
 
         e(GenreTags, {
@@ -63,7 +78,7 @@ function Track(props) {
     return e(ContentHeader, {
         title: props.name,
         image: image,
-        contentType: props.contentType
+        contentType: 'Track'
     });
 }
 
@@ -74,7 +89,7 @@ function Playlist(props) {
     return e(ContentHeader, {
         title: props.name,
         image: image,
-        contentType: props.contentType
+        contentType: 'Playlist'
     });
 }
 
@@ -85,7 +100,7 @@ function User(props) {
     return e(ContentHeader, {
         title: props.name,
         image: image,
-        contentType: props.contentType
+        contentType: 'User'
     });
 }
 
@@ -96,7 +111,7 @@ function Album(props) {
     return e(ContentHeader, {
         title: props.name,
         image: image,
-        contentType: props.contentType
+        contentType: 'Album'
     });
 }
 

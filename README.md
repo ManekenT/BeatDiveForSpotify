@@ -1,1 +1,1 @@
-MusicInfo - Spotify content visualized
+BeatDive - Spotify content visualized

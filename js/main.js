@@ -24,11 +24,7 @@ window.onload = function () {
     fragmentArgs = parseFragment();
     queryArgs = parseQuery();
 
-    // Authentifizierung
-    if (Cookies.get(authCookie)) {
-        // Es ist bereits ein AuthToken aus einer früheren Autorisierung vorhanden
-        authCode = Cookies.get(authCookie);
-    } else if (fragmentArgs['access_token']) {
+    if (fragmentArgs['access_token']) {
         // Es ist der erste Pageload nach der Authentifizierung
         authCode = fragmentArgs['access_token'];
         var expireTime = fragmentArgs['expires_in'];
@@ -36,13 +32,20 @@ window.onload = function () {
         Cookies.set(authCookie, authCode, {
             expires: expireTime
         });
+        if(fragmentArgs['state']) {
+            var stateObject = parseStateString(fragmentArgs['state']);
+            this.loadContent(stateObject.id, stateObject.type)
+        } else {
+            window.location.href = window.location.origin
+        }
     } else if (queryArgs['error']) {
         // Erster Pageload nach unvollständiger Auth
         console.log(fragmentArgs['error'])
         showLoginAppeal();
         return;
     }
-    if (authCode) {
+    if (Cookies.get(authCookie)) {
+        authCode = Cookies.get(authCookie);
         // Der User hat einen AuthToken, der vermeintlich noch gültig ist
         console.log('Spotify Authentication Code:' + authCode);
         spotifyApi.setAccessToken(authCode);
@@ -102,7 +105,7 @@ function authorize() {
     } else if(queryArgs['state']) {
         stateString = '&state=' + queryArgs['state'];
     }
-    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
+    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString + '&show_dialog=true';
 }
 
 function showLoginAppeal() {

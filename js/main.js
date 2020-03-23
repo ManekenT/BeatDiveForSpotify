@@ -32,7 +32,7 @@ window.onload = function () {
         Cookies.set(authCookie, authCode, {
             expires: expireTime
         });
-        if(fragmentArgs['state']) {
+        if (fragmentArgs['state']) {
             var stateObject = parseStateString(fragmentArgs['state']);
             this.loadContent(stateObject.id, stateObject.type)
         } else {
@@ -40,7 +40,6 @@ window.onload = function () {
         }
     } else if (queryArgs['error']) {
         // Erster Pageload nach unvollständiger Auth
-        console.log(fragmentArgs['error'])
         showLoginAppeal();
         return;
     }
@@ -70,15 +69,13 @@ window.onload = function () {
     // Content zur ID laden
     var id;
     var type;
-    if(queryArgs['id'] && queryArgs['type']) {
+    if (queryArgs['id'] && queryArgs['type']) {
         id = queryArgs['id'];
         type = queryArgs['type'];
-    } else if(fragmentArgs['state']) {
+    } else if (fragmentArgs['state']) {
         var stateObject = parseStateString(fragmentArgs['state']);
         id = stateObject.id;
         type = stateObject.type;
-        console.log(id);
-        console.log(type);
     }
     if (id && type) {
         if (type == 'artist') {
@@ -100,9 +97,9 @@ window.onload = function () {
 
 function authorize() {
     var stateString = '';
-    if(queryArgs['id'] && queryArgs['type']) {
+    if (queryArgs['id'] && queryArgs['type']) {
         stateString = '&state=' + queryArgs['id'] + '_' + queryArgs['type'];
-    } else if(queryArgs['state']) {
+    } else if (queryArgs['state']) {
         stateString = '&state=' + queryArgs['state'];
     }
     window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
@@ -168,6 +165,7 @@ function processArtist(id) {
                 } else if (error3) {
                     handleApiError(error3);
                 } else {
+                    // TODO related artists
                     ReactDOM.render(React.createElement(Artist, {
                         name: artist.name,
                         images: artist.images,
@@ -224,15 +222,44 @@ function processUser(id) {
 }
 
 function processAlbum(id) {
-    spotifyApi.getAlbum(id, {}, (error, album) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        ReactDOM.render(React.createElement(Album, {
-            name: album.name,
-            images: album.images,
-        }), document.getElementById('contentContainer'));
+    spotifyApi.getAlbum(id, {}, (error1, album) => {
+        spotifyApi.getAlbumTracks(id, {
+            limit: 50
+        }, (error, albumTracks) => {
+            var randomSongs = [];
+            for (var i = 0; i < 5; i++) {
+                randomSongs[i] = albumTracks.items[Math.floor(Math.random() * albumTracks.items.length)].id;
+            }
+            var songArg = randomSongs.join(",");
+            spotifyApi.getRecommendations({
+                seed_tracks: songArg
+            }, (error2, recommendations) => {
+                if (error1) {
+                    handleApiError(error1)
+                } else if (error2) {
+                    handleApiError(error2);
+                } else {
+                    console.log(albumTracks.items);
+                    ReactDOM.render(React.createElement(Album, {
+                        name: album.name,
+                        images: album.images,
+                        genres: album.genres,
+                        type: album.album_type,
+                        artists: album.artists,
+                        markets: album.available_markets,
+                        label: album.label,
+                        popularity: album.popularity,
+                        releaseDate: album.release_date,
+                        releaseDatePrecision: album.release_date_precision,
+                        tracks: albumTracks.items,
+                        recommendations: recommendations.tracks,
+                        copyrights: album.copyrights,
+                        ids: album.external_ids,
+                        urls: album.external_urls
+                    }), document.getElementById('contentContainer'));
+                }
+            })
+        });
     });
 }
 

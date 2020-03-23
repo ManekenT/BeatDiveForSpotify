@@ -152,7 +152,7 @@ a:focus {
     border: 3px solid var(--color-light);
     position: relative;
     text-align: start;
-    margin: 20px;
+    margin: 0 20px;
 }
 
 .progressBar .progressBarValue {

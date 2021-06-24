@@ -1,99 +1,111 @@
-'use strict';
+import * as util from '../lib/util';
+import { Artist, Playlist, Track, Default, User, Album, LoginAppeal, BlockerInfo } from './components'
+import Header from './header/header';
+import Cookies from 'js-cookie'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import SpotifyWebApi from 'spotify-web-api-js';
+import './App.css';
 
+const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
 const userScopes = 'user-read-currently-playing';
-const authCookie = 'authCode'
+const authCookie = 'authCode';
 var authCode;
 var fragmentArgs;
 var queryArgs;
 
-var spotifyApi = new SpotifyWebApi();
 
-window.addEventListener("dragover", function (e) {
-    e = e || event;
-    e.preventDefault();
-}, false);
-window.addEventListener("drop", function (e) {
-    e = e || event;
-    e.preventDefault();
-    processDroppedContent(e.dataTransfer.getData("text"));
-}, false);
 
-window.onload = function () {
-    // URL Argumente parsen
-    fragmentArgs = parseFragment();
-    queryArgs = parseQuery();
+class App extends React.Component {
 
-    if (fragmentArgs['access_token']) {
-        // Es ist der erste Pageload nach der Authentifizierung
-        authCode = fragmentArgs['access_token'];
-        var expireTime = fragmentArgs['expires_in'];
-        var expireTime = new Date(new Date().getTime() + (expireTime - 60) * 1000);
-        Cookies.set(authCookie, authCode, {
-            expires: expireTime
-        });
-        if (fragmentArgs['state']) {
-            var stateObject = parseStateString(fragmentArgs['state']);
-            this.loadContent(stateObject.id, stateObject.type)
-        } else {
-            window.location.href = window.location.origin
-        }
-    } else if (queryArgs['error']) {
-        // Erster Pageload nach unvollständiger Auth
-        showLoginAppeal();
-        return;
-    }
-    if (Cookies.get(authCookie)) {
-        authCode = Cookies.get(authCookie);
-        // Der User hat einen AuthToken, der vermeintlich noch gültig ist
-        console.log('Spotify Authentication Code:' + authCode);
-        spotifyApi.setAccessToken(authCode);
-        spotifyApi.getMe({},
-            (error, me) => {
-                if (error) {
-                    handleApiError(error);
-                } else {
-                    // User wurde erfolgreich authentifiziert
-                    ReactDOM.render(React.createElement(AccountLabel, {
-                        display_name: me.display_name,
-                        image_url: me.images[0].url
-                    }), document.getElementById('accountLabel'));
-                }
+    constructor(props) {
+        super(props);
+        this.state = { type: 'default', id: '' };
+
+        console.log(this.state);
+
+        window.addEventListener("dragover", function (e) {
+            e.preventDefault();
+        }, false);
+        window.addEventListener("drop", function (e) {
+            e.preventDefault();
+            processDroppedContent(e.dataTransfer.getData("text"));
+        }, false);
+
+        // URL Argumente parsen
+        fragmentArgs = util.parseFragment();
+        queryArgs = util.parseQuery();
+        var stateObject;
+
+        if (fragmentArgs['access_token']) {
+            // Es ist der erste Pageload nach der Authentifizierung
+            authCode = fragmentArgs['access_token'];
+            var expireTime = fragmentArgs['expires_in'];
+            expireTime = new Date(new Date().getTime() + (expireTime - 60) * 1000);
+            Cookies.set(authCookie, authCode, {
+                expires: expireTime
+            });
+            if (fragmentArgs['state']) {
+                stateObject = util.parseStateString(fragmentArgs['state']);
+                loadContent(stateObject.id, stateObject.type)
+            } else {
+                window.location.href = window.location.origin
             }
-        );
-    } else {
-        // Erster Pageload, Login ermöglichen
-        authorize();
+        } else if (queryArgs['error']) {
+            // Erster Pageload nach unvollständiger Auth
+            return React.createElement(LoginAppeal, { authorize: authorize });
+        }
+
+
+        if (Cookies.get(authCookie)) {
+            authCode = Cookies.get(authCookie);
+            // Der User hat einen AuthToken, der vermeintlich noch gültig ist
+            console.log('Spotify Authentication Code:' + authCode);
+            spotifyApi.setAccessToken(authCode);
+        } else {
+            // Erster Pageload, Login ermöglichen
+            //authorize();
+        }
+
+        // Content zur ID laden
+        if (queryArgs['id'] && queryArgs['type']) {
+            this.state.id = queryArgs['id'];
+            this.state.type = queryArgs['type'];
+        } else if (fragmentArgs['state']) {
+            stateObject = util.parseStateString(fragmentArgs['state']);
+            this.state.id = stateObject.id;
+            this.state.type = stateObject.type;
+        }
     }
 
-    // Content zur ID laden
-    var id;
-    var type;
-    if (queryArgs['id'] && queryArgs['type']) {
-        id = queryArgs['id'];
-        type = queryArgs['type'];
-    } else if (fragmentArgs['state']) {
-        var stateObject = parseStateString(fragmentArgs['state']);
-        id = stateObject.id;
-        type = stateObject.type;
+    componentDidMount() {
+
     }
-    if (id && type) {
-        if (type == 'artist') {
-            processArtist(id);
-        } else if (type == 'track') {
-            processTrack(id);
-        } else if (type == 'album') {
-            processAlbum(id);
-        } else if (type == 'user') {
-            processUser(id);
-        } else if (type == 'playlist') {
-            processPlaylist(id);
+
+    render() {
+        console.log(this.state.type);
+        var content;
+        if (this.state.type === 'default') {
+            content = <Default />;
+        } else if (this.state.type === 'track') {
+            content = <Track id={this.state.id} />
         }
-    } else {
-        // Kein Content vorhanden, default anzeigen
-        ReactDOM.render(React.createElement(Default, {}), document.getElementById('contentContainer'));
+        return <div>
+            <Header
+                loadSong={loadCurrentSong}
+                loadArtist={loadCurrentArtist}
+                loadUser={loadCurrentUser}
+                loadPlaylist={loadCurrentPlaylist}
+                loadAlbum={loadCurrentAlbum}
+                authorize={authorize} />
+            {content}
+        </div>;
     }
+
 }
+
+export default App;
 
 function authorize() {
     var stateString = '';
@@ -105,18 +117,14 @@ function authorize() {
     window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
 }
 
-function showLoginAppeal() {
-    ReactDOM.render(React.createElement(LoginAppeal, {}), document.getElementById('contentContainer'));
-}
-
 function handleApiError(error) {
-    if (error.status == 401) {
+    if (error.status === 401) {
         // Auth Code is not valid anymore
         Cookies.remove(authCookie);
         authorize();
-    } else if (error.status == 0) {
+    } else if (error.status === 0) {
         // Some plugin is blocking access to the spotify api
-        ReactDOM.render(React.createElement(BlockerInfo, {}), document.getElementById('contentContainer'));
+        return React.createElement(BlockerInfo, {});
     } else {
         console.error(error);
     }
@@ -124,7 +132,7 @@ function handleApiError(error) {
 
 function processDroppedContent(droppedContent) {
     var urlPart = droppedContent.slice(0, 25);
-    if (urlPart != 'https://open.spotify.com/') {
+    if (urlPart !== 'https://open.spotify.com/') {
         console.log('Not a valid spotify url: ' + urlPart);
         return;
     }
@@ -166,7 +174,7 @@ function processArtist(id) {
                     handleApiError(error3);
                 } else {
                     // TODO related artists
-                    ReactDOM.render(React.createElement(Artist, {
+                    return React.createElement(Artist, {
                         name: artist.name,
                         images: artist.images,
                         urls: artist.external_urls,
@@ -175,23 +183,10 @@ function processArtist(id) {
                         popularity: artist.popularity,
                         tracks: tracks.tracks,
                         recommendations: recommendations.tracks
-                    }), document.getElementById('contentContainer'));
+                    });
                 }
             });
         });
-    });
-}
-
-function processTrack(id) {
-    spotifyApi.getTrack(id, {}, (error, track) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        ReactDOM.render(React.createElement(Track, {
-            name: track.name,
-            images: track.album.images,
-        }), document.getElementById('contentContainer'));
     });
 }
 
@@ -214,10 +209,10 @@ function processUser(id) {
             handleApiError(error)
             return;
         }
-        ReactDOM.render(React.createElement(User, {
+        return React.createElement(User, {
             name: user.display_name,
             images: user.images,
-        }), document.getElementById('contentContainer'));
+        });
     });
 }
 
@@ -263,7 +258,8 @@ function processAlbum(id) {
     });
 }
 
-function loadCurrentSong() {
+export function loadCurrentSong() {
+    console.log('Loading song');
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
         if (error) {
             handleApiError(error)
@@ -275,7 +271,7 @@ function loadCurrentSong() {
     })
 }
 
-function loadCurrentAlbum() {
+export function loadCurrentAlbum() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
         if (error) {
             handleApiError(error)
@@ -287,7 +283,7 @@ function loadCurrentAlbum() {
     })
 }
 
-function loadCurrentArtist() {
+export function loadCurrentArtist() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
         if (error) {
             handleApiError(error)
@@ -299,19 +295,19 @@ function loadCurrentArtist() {
     })
 }
 
-function loadCurrentPlaylist() {
+export function loadCurrentPlaylist() {
     spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
         if (error) {
             handleApiError(error)
             return;
         }
-        if (track.context && track.context.type == 'playlist') {
+        if (track.context && track.context.type === 'playlist') {
             processDroppedContent(track.context.external_urls['spotify']);
         }
     })
 }
 
-function loadCurrentUser() {
+export function loadCurrentUser() {
     spotifyApi.getMe({}, (error, user) => {
         if (error) {
             handleApiError(error)

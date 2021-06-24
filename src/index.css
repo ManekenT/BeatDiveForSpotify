@@ -27,11 +27,6 @@ button {
     font-weight: bolder;
 }
 
-.headerButton {
-    font-size: 15px;
-    height: 40px;
-}
-
 button:hover {
     background-color: var(--color-light);
     color: var(--color-dark);
@@ -64,7 +59,7 @@ a:focus {
     background-color: var(--color-dark);
     color: var(--color-light);
     font-family: 'Arvo', serif;
-    font-weight: bolder;
+    font-weight: 600;
 }
 
 #logoText {
@@ -102,7 +97,7 @@ a:focus {
 }
 
 .titleImage {
-    width: 200px;
+    width: 160px;
     border-style: solid;
     border-color: var(--color-light);
 }
@@ -118,8 +113,8 @@ a:focus {
 }
 
 .titleText {
-    font-size: 120px;
-    font-weight: bold;
+    font-size: 80px;
+    font-weight: 700;
     text-align: center;
 }
 
@@ -128,10 +123,6 @@ a:focus {
     font-size: 30px;
     font-weight: lighter;
     text-align: center;
-}
-
-.item {
-    margin: 10px;
 }
 
 #contentContainer {
@@ -164,7 +155,7 @@ a:focus {
 }
 
 .sectionItem {
-    margin: 20px;
+    margin: 10px;
 }
 
 .tag {
@@ -196,7 +187,7 @@ a:focus {
 }
 
 .trackImage {
-    width: 100px;
+    width: 50px;
 }
 
 .trackCollection {

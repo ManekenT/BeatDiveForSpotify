@@ -1,9 +1,9 @@
 
-var keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-var modes = ["Minor", "Major"];
+const keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+const modes = ["Minor", "Major"];
 
-function parseFragment() {
-    var hash = location.hash.replace(/#/g, '');
+export const parseFragment = () => {
+    var hash = window.location.hash.replace(/#/g, '');
     var all = hash.split('&');
     var args = {};
     all.forEach(function (keyvalue) {
@@ -14,8 +14,8 @@ function parseFragment() {
     return args;
 }
 
-function parseQuery() {
-    var hash = location.search.replace(/\?/g, '');
+export const parseQuery = () => {
+    var hash = window.location.search.replace(/\?/g, '');
     var all = hash.split('&');
     var args = {};
     all.forEach(function (keyvalue) {
@@ -26,7 +26,7 @@ function parseQuery() {
     return args;
 }
 
-function msToDuration(ms) {
+export const msToDuration = (ms) => {
     var i = Math.floor(ms / 1000);
     var seconds = i % 60;
     var minutes = (i - seconds) / 60;
@@ -36,15 +36,15 @@ function msToDuration(ms) {
     return "" + minutes + ":" + seconds;
 }
 
-function getExplicit(explicit) {
+export const getExplicit = (explicit) => {
     if (explicit) {
         return "Yes";
     }
     return "No";
 }
 
-function parseStateString(string) {
-    state = string.split('_');
+export const parseStateString = (string) => {
+    var state = string.split('_');
     return {
         id: state[0],
         type: state[1]

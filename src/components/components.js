@@ -1,25 +1,16 @@
-'use strict';
+import React from 'react';
+import SpotifyWebApi from 'spotify-web-api-js';
 
 const e = React.createElement;
+const spotifyApi = new SpotifyWebApi();
 
-function AccountLabel(props) {
-    return e(React.Fragment, {},
-        e('img', {
-            id: 'accountImage',
-            src: props.image_url,
-        }),
-        e('div', {
-            id: 'accountName',
-        }, props.display_name));
-}
-
-function Default(props) {
+export function Default(props) {
     return e('div', {
         id: 'defaultContent'
     }, 'Drag and drop a Spotify link over here. Artist, user, song, playlist or album!');
 }
 
-function LoginAppeal(props) {
+export function LoginAppeal(props) {
     return e('div', {
         className: 'overlay'
     },
@@ -29,12 +20,12 @@ function LoginAppeal(props) {
         e('button', {
             className: 'item',
             id: 'authorizeButton',
-            onClick: authorize
+            onClick: props.authorize
         }, 'Authorize')
     );
 }
 
-function BlockerInfo() {
+export function BlockerInfo() {
     return e('div', {
         className: 'overlay'
     },
@@ -48,7 +39,7 @@ function BlockerInfo() {
     );
 }
 
-function Artist(props) {
+export function Artist(props) {
     return e(React.Fragment, {},
         e(ContentHeader, {
             title: props.name,
@@ -82,15 +73,38 @@ function Artist(props) {
     );
 }
 
-function Track(props) {
-    return e(ContentHeader, {
-        title: props.name,
-        images: props.images,
-        contentType: 'Track'
-    });
+export class Track extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = { track: '' };
+        this.trackId = props.id;
+    }
+
+    componentDidMount() {
+        spotifyApi.getTrack(this.trackId, {}, (error, track) => {
+            if (error) {
+                console.log();
+                //return handleApiError(error);
+            }
+            this.setState({
+                track: track
+            });
+        });
+    }
+
+    render() {
+        if (this.state.track !== '') {
+            return <ContentHeader
+                title={this.state.track.name} images={this.state.track.album.images} contentType='Track'
+            />;
+        } else {
+            return null;
+        }
+    }
 }
 
-function Playlist(props) {
+export function Playlist(props) {
     return e(ContentHeader, {
         title: props.name,
         images: props.images,
@@ -98,7 +112,7 @@ function Playlist(props) {
     });
 }
 
-function User(props) {
+export function User(props) {
     return e(ContentHeader, {
         title: props.name,
         images: props.images,
@@ -106,7 +120,7 @@ function User(props) {
     });
 }
 
-function Album(props) {
+export function Album(props) {
     return e(React.Fragment, {},
         e(ContentHeader, {
             title: props.name,
@@ -153,7 +167,7 @@ function Album(props) {
     );
 }
 
-function ContentHeader(props) {
+export function ContentHeader(props) {
     if (props.images[0]) {
         var imageElement = e('img', {
             className: 'titleImage item',
@@ -175,7 +189,7 @@ function ContentHeader(props) {
     );
 }
 
-function Links(props) {
+export function Links(props) {
     var urlComponents = [];
     for (var key in props.urls) {
         var value = props.urls[key];
@@ -187,23 +201,23 @@ function Links(props) {
     return e(React.Fragment, {}, urlComponents);
 }
 
-function Copyright(props) {
+export function Copyright(props) {
     var copyrightComponents = [];
     props.copyrights.forEach((object) => {
-        if (object.type == 'C') {
+        if (object.type === 'C') {
             copyrightComponents.push(e('div', {
                 key: 'C'
             }, `© ${object.text}`));
-        } else if (object.type == 'P') {
+        } else if (object.type === 'P') {
             copyrightComponents.push(e('div', {
                 key: 'P'
             }, `℗ ${object.text}`));
         }
     });
-    return e('div', {className: 'sectionItem'}, copyrightComponents);
+    return e('div', { className: 'sectionItem' }, copyrightComponents);
 }
 
-function Ids(props) {
+export function Ids(props) {
     var idComponents = [];
     for (var key in props.ids) {
         var value = props.ids[key];
@@ -211,10 +225,10 @@ function Ids(props) {
             key: key
         }, `${key}: ${value}`));
     }
-    return e('div', {className: 'sectionItem'}, idComponents);
+    return e('div', { className: 'sectionItem' }, idComponents);
 }
 
-function ArtistPopularity(props) {
+export function ArtistPopularity(props) {
     return e('div', {
         id: 'popularityLabel',
         className: 'sectionItem'
@@ -227,7 +241,7 @@ function ArtistPopularity(props) {
     );
 }
 
-function AlbumPopularity(props) {
+export function AlbumPopularity(props) {
     return e('div', {
         id: 'popularityLabel',
         className: 'sectionItem'
@@ -239,9 +253,9 @@ function AlbumPopularity(props) {
     );
 }
 
-function AlbumGeneralInfo(props) {
+export function AlbumGeneralInfo(props) {
     var typeText = 'A';
-    if(props.type == 'album') {
+    if (props.type === 'album') {
         typeText += 'n';
     }
     typeText += ` ${props.type} by `;
@@ -250,10 +264,10 @@ function AlbumGeneralInfo(props) {
         artistNames.push(artist.name)
     });
     typeText += artistNames.join(', ');
-    return e('div', {className: 'sectionItem'}, typeText);
+    return e('div', { className: 'sectionItem' }, typeText);
 }
 
-function ProgressBar(props) {
+export function ProgressBar(props) {
     return e('div', {
         className: 'progressBar',
     },
@@ -266,8 +280,8 @@ function ProgressBar(props) {
     );
 }
 
-function GenreTags(props) {
-    if (props.genres.length == 0) {
+export function GenreTags(props) {
+    if (props.genres.length === 0) {
         return null;
     }
     var genreTagComponents = [];
@@ -283,7 +297,7 @@ function GenreTags(props) {
     }, genreTagComponents);
 }
 
-function TrackCollectionWithImages(props) {
+export function TrackCollectionWithImages(props) {
     var trackComponents = [];
     for (var key in props.tracks) {
         var value = props.tracks[key];
@@ -304,7 +318,7 @@ function TrackCollectionWithImages(props) {
     }, trackComponents);
 }
 
-function Tracklist(props) {
+export function Tracklist(props) {
     var trackComponents = [];
     for (var key in props.tracks) {
         var value = props.tracks[key];
@@ -312,7 +326,7 @@ function Tracklist(props) {
         trackComponents.push(e('div', {
             className: 'item',
             key: key
-        }, `${index+1}. ${value.name}`));
+        }, `${index + 1}. ${value.name}`));
     }
     return e('div', {
         className: 'tracklist sectionItem'

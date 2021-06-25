@@ -1,7 +1,7 @@
 function ContentHeader(props) {
 
     if (props.images[0]) {
-        var imageElement = <img className="titleImage item" src={props.images[0].url} />
+        var imageElement = <img className="titleImage item" src={props.images[0].url} alt="cover" />
     }
     return <div>
         <div id="contentType">{props.contentType}</div>

@@ -27,7 +27,9 @@ class UserPage extends React.Component {
         if (this.state.user === '') {
             return null;
         }
-        return <ContentHeader title={this.state.user.display_name} images={this.state.user.images} contentType="User" />
+        return <div className="contentContaienr">
+            <ContentHeader title={this.state.user.display_name} images={this.state.user.images} contentType="User" />
+        </div>
     }
 }
 

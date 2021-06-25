@@ -1,17 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import Cookies from 'js-cookie'
 import SpotifyWebApi from 'spotify-web-api-js';
 import * as util from '../lib/util';
 import './App.css';
-import { Artist, Playlist, User } from './components'
 import Header from './header/header';
 import TrackPage from './trackPage/trackPage'
 import AlbumPage from './albumPage/albumPage'
+import PlaylistPage from './playlistPage/playlistPage';
+import ArtistPage from './artistPage/artistPage';
+import UserPage from './userPage/userPage';
 import TextContainer from '../container/textContainer/textContainer';
 import TextOverlay from '../container/textOverlay/textOverlay';
 import MarkedText from '../container/markedText/markedText';
-import UserPage from './userPage/userPage';
 
 const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
@@ -35,8 +35,6 @@ class App extends React.Component {
         this.loadCurrentPlaylist = this.loadCurrentPlaylist.bind(this);
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.authorize = this.authorize.bind(this);
-
-        console.log(this.state);
 
         window.addEventListener("dragover", function (e) {
             e.preventDefault();
@@ -90,7 +88,6 @@ class App extends React.Component {
     }
 
     render() {
-        console.log(this.state.type);
         var content;
         if (this.state.type === 'default') {
             content = <TextContainer>
@@ -113,6 +110,10 @@ class App extends React.Component {
             content = <AlbumPage albumId={this.state.id} error={this.handleApiError} />
         } else if (this.state.type === 'user') {
             content = <UserPage userId={this.state.id} error={this.handleApiError} />
+        } else if (this.state.type === 'playlist') {
+            content = <PlaylistPage playlistId={this.state.id} error={this.handleApiError} />
+        } else if (this.state.type === 'artist') {
+            content = <ArtistPage artistId={this.state.id} error={this.handleApiError} />
         }
         return <div>
             <Header
@@ -129,7 +130,6 @@ class App extends React.Component {
     }
 
     loadCurrentSong() {
-        console.log('Loading song');
         spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
             if (error) {
                 this.handleApiError(error)
@@ -245,49 +245,6 @@ function processDroppedContent(droppedContent) {
         console.log('Dropped playlist id: ' + playlistId);
         loadContent(playlistId, 'playlist');
     }
-}
-
-function processArtist(id) {
-    spotifyApi.getArtist(id, {}, (error1, artist) => {
-        spotifyApi.getArtistTopTracks(id, 'from_token', {}, (error2, tracks) => {
-            spotifyApi.getRecommendations({
-                seed_artists: id
-            }, (error3, recommendations) => {
-                if (error1) {
-                    //handleApiError(error1);
-                } else if (error2) {
-                    //handleApiError(error2);
-                } else if (error3) {
-                    //handleApiError(error3);
-                } else {
-                    // TODO related artists
-                    return React.createElement(Artist, {
-                        name: artist.name,
-                        images: artist.images,
-                        urls: artist.external_urls,
-                        followers: artist.followers.total,
-                        genres: artist.genres,
-                        popularity: artist.popularity,
-                        tracks: tracks.tracks,
-                        recommendations: recommendations.tracks
-                    });
-                }
-            });
-        });
-    });
-}
-
-function processPlaylist(id) {
-    spotifyApi.getPlaylist(id, {}, (error, playlist) => {
-        if (error) {
-            //handleApiError(error)
-            return;
-        }
-        ReactDOM.render(React.createElement(Playlist, {
-            name: playlist.name,
-            images: playlist.images,
-        }), document.getElementById('contentContainer'));
-    });
 }
 
 function loadContent(id, type) {

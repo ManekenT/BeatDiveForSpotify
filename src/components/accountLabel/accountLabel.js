@@ -11,7 +11,6 @@ export class AccountLabel extends React.Component {
     }
 
     componentDidMount() {
-        console.log("mounted image");
         spotifyApi.getMe({},
             (error, me) => {
                 if (error) {
@@ -27,9 +26,8 @@ export class AccountLabel extends React.Component {
 
     render() {
         if (this.state.me !== '') {
-            console.log(this.state.me);
             return <button id="accountLabel" onClick={this.props.loadUser}>
-                <img id="accountImage" src={this.state.me.images[0].url} />
+                <img id="accountImage" src={this.state.me.images[0].url} alt="profile" />
                 <div id="accountName">{this.state.me.display_name}</div>
             </button>
         } else {

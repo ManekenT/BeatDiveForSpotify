@@ -9,7 +9,6 @@
 }
 
 body {
-    margin: 0px;
     background-color: var(--color-dark);
     color: var(--color-light);
     font-family: 'Montserrat', sans-serif;
@@ -66,7 +65,6 @@ a:focus {
 #logoText {
     font-size: 40px;
     flex-grow: 1;
-    margin: 0 20px;
 }
 
 #accountName {
@@ -87,7 +85,7 @@ a:focus {
     padding: 0;
 }
 
-#defaultContent {
+#textContainer {
     color: var(--color-light);
     position: fixed;
     /* or absolute */
@@ -95,6 +93,10 @@ a:focus {
     left: 50%;
     /* bring your own prefixes */
     transform: translate(-50%, -50%);
+}
+
+.item {
+    margin: 10px;
 }
 
 .titleImage {
@@ -126,7 +128,7 @@ a:focus {
     text-align: center;
 }
 
-#contentContainer {
+.contentContainer {
     padding-bottom: 20px;
     width: 100%;
     margin: 0 auto;

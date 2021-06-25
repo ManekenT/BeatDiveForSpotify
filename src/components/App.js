@@ -1,11 +1,17 @@
-import * as util from '../lib/util';
-import { Artist, Playlist, Track, Default, User, Album, LoginAppeal, BlockerInfo } from './components'
-import Header from './header/header';
-import Cookies from 'js-cookie'
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Cookies from 'js-cookie'
 import SpotifyWebApi from 'spotify-web-api-js';
+import * as util from '../lib/util';
 import './App.css';
+import { Artist, Playlist, User } from './components'
+import Header from './header/header';
+import TrackPage from './trackPage/trackPage'
+import AlbumPage from './albumPage/albumPage'
+import TextContainer from '../container/textContainer/textContainer';
+import TextOverlay from '../container/textOverlay/textOverlay';
+import MarkedText from '../container/markedText/markedText';
+import UserPage from './userPage/userPage';
 
 const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
@@ -22,6 +28,13 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = { type: 'default', id: '' };
+        this.handleApiError = this.handleApiError.bind(this);
+        this.loadCurrentSong = this.loadCurrentSong.bind(this);
+        this.loadCurrentAlbum = this.loadCurrentAlbum.bind(this);
+        this.loadCurrentArtist = this.loadCurrentArtist.bind(this);
+        this.loadCurrentPlaylist = this.loadCurrentPlaylist.bind(this);
+        this.loadCurrentUser = this.loadCurrentUser.bind(this);
+        this.authorize = this.authorize.bind(this);
 
         console.log(this.state);
 
@@ -53,8 +66,8 @@ class App extends React.Component {
                 window.location.href = window.location.origin
             }
         } else if (queryArgs['error']) {
+            this.state.type = 'loginAppeal'
             // Erster Pageload nach unvollständiger Auth
-            return React.createElement(LoginAppeal, { authorize: authorize });
         }
 
 
@@ -63,9 +76,6 @@ class App extends React.Component {
             // Der User hat einen AuthToken, der vermeintlich noch gültig ist
             console.log('Spotify Authentication Code:' + authCode);
             spotifyApi.setAccessToken(authCode);
-        } else {
-            // Erster Pageload, Login ermöglichen
-            //authorize();
         }
 
         // Content zur ID laden
@@ -79,56 +89,133 @@ class App extends React.Component {
         }
     }
 
-    componentDidMount() {
-
-    }
-
     render() {
         console.log(this.state.type);
         var content;
         if (this.state.type === 'default') {
-            content = <Default />;
+            content = <TextContainer>
+                Drag and drop a Spotify link over here. Artist, user, song, playlist or album!
+            </TextContainer>;
+        } else if (this.state.type === 'authError') {
+            content = <TextOverlay>
+                Something is blocking requests to the spotify api.
+                Please allow this site to access to <MarkedText>api.spotify.com</MarkedText> and refresh the page.
+                Thanks!
+            </TextOverlay>
+        } else if (this.state.type === 'loginAppeal') {
+            content = <TextOverlay>
+                Please authorize this site with spotify.
+                It doesn't really make sense without access to the Spotify Api.
+            </TextOverlay>
         } else if (this.state.type === 'track') {
-            content = <Track id={this.state.id} />
+            content = <TrackPage trackId={this.state.id} error={this.handleApiError} />
+        } else if (this.state.type === 'album') {
+            content = <AlbumPage albumId={this.state.id} error={this.handleApiError} />
+        } else if (this.state.type === 'user') {
+            content = <UserPage userId={this.state.id} error={this.handleApiError} />
         }
         return <div>
             <Header
-                loadSong={loadCurrentSong}
-                loadArtist={loadCurrentArtist}
-                loadUser={loadCurrentUser}
-                loadPlaylist={loadCurrentPlaylist}
-                loadAlbum={loadCurrentAlbum}
-                authorize={authorize} />
+                loadSong={this.loadCurrentSong}
+                loadArtist={this.loadCurrentArtist}
+                loadUser={this.loadCurrentUser}
+                loadPlaylist={this.loadCurrentPlaylist}
+                loadAlbum={this.loadCurrentAlbum}
+                authorize={this.authorize}
+                error={this.handleApiError}
+            />
             {content}
         </div>;
     }
 
+    loadCurrentSong() {
+        console.log('Loading song');
+        spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+            if (error) {
+                this.handleApiError(error)
+                return;
+            }
+            if (track.item) {
+                loadContent(track.item.id, 'track');
+            }
+        })
+    }
+
+    loadCurrentAlbum() {
+        spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+            if (error) {
+                this.handleApiError(error)
+                return;
+            }
+            if (track.item) {
+                loadContent(track.item.album.id, 'album');
+            }
+        })
+    }
+
+    loadCurrentArtist() {
+        spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+            if (error) {
+                this.handleApiError(error)
+                return;
+            }
+            if (track.item) {
+                loadContent(track.item.artists[0].id, 'artist');
+            }
+        })
+    }
+
+    loadCurrentPlaylist() {
+        spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
+            if (error) {
+                this.handleApiError(error)
+                return;
+            }
+            if (track.context && track.context.type === 'playlist') {
+                processDroppedContent(track.context.external_urls['spotify']);
+            }
+        })
+    }
+
+    loadCurrentUser() {
+        spotifyApi.getMe({}, (error, user) => {
+            if (error) {
+                this.handleApiError(error)
+                return;
+            }
+            loadContent(user.id, 'user');
+        })
+    }
+
+    handleApiError(error) {
+        console.error(error);
+        if (error.status === 401) {
+            // Auth Code is not valid anymore
+            Cookies.remove(authCookie);
+            this.authorize();
+        } else if (error.status === 0) {
+            this.setState({
+                type: 'authError'
+            })
+        }
+    }
+
+    authorize() {
+        var stateString = '';
+        if (queryArgs['id'] && queryArgs['type']) {
+            stateString = '&state=' + queryArgs['id'] + '_' + queryArgs['type'];
+        } else if (queryArgs['state']) {
+            stateString = '&state=' + queryArgs['state'];
+        }
+        window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
+    }
 }
 
 export default App;
 
-function authorize() {
-    var stateString = '';
-    if (queryArgs['id'] && queryArgs['type']) {
-        stateString = '&state=' + queryArgs['id'] + '_' + queryArgs['type'];
-    } else if (queryArgs['state']) {
-        stateString = '&state=' + queryArgs['state'];
-    }
-    window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
-}
 
-function handleApiError(error) {
-    if (error.status === 401) {
-        // Auth Code is not valid anymore
-        Cookies.remove(authCookie);
-        authorize();
-    } else if (error.status === 0) {
-        // Some plugin is blocking access to the spotify api
-        return React.createElement(BlockerInfo, {});
-    } else {
-        console.error(error);
-    }
-}
+
+
 
 function processDroppedContent(droppedContent) {
     var urlPart = droppedContent.slice(0, 25);
@@ -167,11 +254,11 @@ function processArtist(id) {
                 seed_artists: id
             }, (error3, recommendations) => {
                 if (error1) {
-                    handleApiError(error1);
+                    //handleApiError(error1);
                 } else if (error2) {
-                    handleApiError(error2);
+                    //handleApiError(error2);
                 } else if (error3) {
-                    handleApiError(error3);
+                    //handleApiError(error3);
                 } else {
                     // TODO related artists
                     return React.createElement(Artist, {
@@ -193,7 +280,7 @@ function processArtist(id) {
 function processPlaylist(id) {
     spotifyApi.getPlaylist(id, {}, (error, playlist) => {
         if (error) {
-            handleApiError(error)
+            //handleApiError(error)
             return;
         }
         ReactDOM.render(React.createElement(Playlist, {
@@ -201,120 +288,6 @@ function processPlaylist(id) {
             images: playlist.images,
         }), document.getElementById('contentContainer'));
     });
-}
-
-function processUser(id) {
-    spotifyApi.getUser(id, {}, (error, user) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        return React.createElement(User, {
-            name: user.display_name,
-            images: user.images,
-        });
-    });
-}
-
-function processAlbum(id) {
-    spotifyApi.getAlbum(id, {}, (error1, album) => {
-        spotifyApi.getAlbumTracks(id, {
-            limit: 50
-        }, (error, albumTracks) => {
-            var randomSongs = [];
-            for (var i = 0; i < 5; i++) {
-                randomSongs[i] = albumTracks.items[Math.floor(Math.random() * albumTracks.items.length)].id;
-            }
-            var songArg = randomSongs.join(",");
-            spotifyApi.getRecommendations({
-                seed_tracks: songArg
-            }, (error2, recommendations) => {
-                if (error1) {
-                    handleApiError(error1)
-                } else if (error2) {
-                    handleApiError(error2);
-                } else {
-                    console.log(albumTracks.items);
-                    ReactDOM.render(React.createElement(Album, {
-                        name: album.name,
-                        images: album.images,
-                        genres: album.genres,
-                        type: album.album_type,
-                        artists: album.artists,
-                        markets: album.available_markets,
-                        label: album.label,
-                        popularity: album.popularity,
-                        releaseDate: album.release_date,
-                        releaseDatePrecision: album.release_date_precision,
-                        tracks: albumTracks.items,
-                        recommendations: recommendations.tracks,
-                        copyrights: album.copyrights,
-                        ids: album.external_ids,
-                        urls: album.external_urls
-                    }), document.getElementById('contentContainer'));
-                }
-            })
-        });
-    });
-}
-
-export function loadCurrentSong() {
-    console.log('Loading song');
-    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        if (track.item) {
-            loadContent(track.item.id, 'track');
-        }
-    })
-}
-
-export function loadCurrentAlbum() {
-    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        if (track.item) {
-            loadContent(track.item.album.id, 'album');
-        }
-    })
-}
-
-export function loadCurrentArtist() {
-    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        if (track.item) {
-            loadContent(track.item.artists[0].id, 'artist');
-        }
-    })
-}
-
-export function loadCurrentPlaylist() {
-    spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        if (track.context && track.context.type === 'playlist') {
-            processDroppedContent(track.context.external_urls['spotify']);
-        }
-    })
-}
-
-export function loadCurrentUser() {
-    spotifyApi.getMe({}, (error, user) => {
-        if (error) {
-            handleApiError(error)
-            return;
-        }
-        loadContent(user.id, 'user');
-    })
 }
 
 function loadContent(id, type) {

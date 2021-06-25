@@ -11,7 +11,7 @@ class Header extends React.Component {
             <button className='headerButton item' onClick={this.props.loadAlbum} >album</button>
             <button className='headerButton item' onClick={this.props.loadArtist} >artist</button>
             <button className='headerButton item' onClick={this.props.loadPlaylist} >playlist</button>
-            <AccountLabel authorize={this.props.authorize} />
+            <AccountLabel authorize={this.props.authorize} loadUser={this.props.loadUser} error={this.props.error} />
         </div>;
     }
 }

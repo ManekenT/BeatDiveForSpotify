@@ -15,7 +15,7 @@ export class AccountLabel extends React.Component {
         spotifyApi.getMe({},
             (error, me) => {
                 if (error) {
-                    //handleApiError(error);
+                    this.props.error(error);
                 } else {
                     this.setState({
                         me: me
@@ -28,10 +28,10 @@ export class AccountLabel extends React.Component {
     render() {
         if (this.state.me !== '') {
             console.log(this.state.me);
-            return <div id="accountLabel">
+            return <button id="accountLabel" onClick={this.props.loadUser}>
                 <img id="accountImage" src={this.state.me.images[0].url} />
                 <div id="accountName">{this.state.me.display_name}</div>
-            </div>
+            </button>
         } else {
             return <button className="item" onClick={this.props.authorize}>Authorize</button>;
         }

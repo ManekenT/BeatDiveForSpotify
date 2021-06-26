@@ -1,5 +1,10 @@
-function Copyrights(props) {
-    var copyrightComponents = [];
+
+interface Props {
+    copyrights: SpotifyApi.CopyrightObject[]
+}
+
+function Copyrights(props: Props) {
+    var copyrightComponents: any[] = [];
     props.copyrights.forEach((object) => {
         if (object.type === 'C') {
             copyrightComponents.push(
@@ -17,7 +22,7 @@ function Copyrights(props) {
     });
     return <div className="sectionItem">
         {copyrightComponents}
-    </div>
+    </div>;
 }
 
 export default Copyrights;

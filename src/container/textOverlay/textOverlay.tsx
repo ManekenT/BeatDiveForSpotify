@@ -1,6 +1,10 @@
-import TextContainer from "../textContainer/textContainer";
+import TextContainer from '../textContainer/textContainer';
 
-function TextOverlay(props) {
+interface Props {
+    children: any
+}
+
+function TextOverlay(props: Props) {
     return <div className="overlay">
         <TextContainer>{props.children}</TextContainer>
     </div>;

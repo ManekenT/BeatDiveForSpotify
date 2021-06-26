@@ -1,6 +1,10 @@
-import Genre from "../genre/genre";
+import Genre from '../genre/genre';
 
-function GenreCollection(props) {
+interface Props {
+    genres: string[]
+}
+
+function GenreCollection(props: Props) {
     if (props.genres.length === 0) {
         return null;
     }
@@ -13,7 +17,7 @@ function GenreCollection(props) {
     }
     return <div className="tagContainer sectionItem">
         {genreTagComponents}
-    </div>
+    </div>;
 }
 
 export default GenreCollection;

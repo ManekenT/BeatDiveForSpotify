@@ -1,10 +1,10 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import React from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
-import Tracklist from "../../container/tracklist/tracklist";
-import TrackCollection from "../../container/trackCollection/trackCollection";
-import GenreCollection from "../../container/genreCollection/genreCollection";
-import AlbumGeneralInfo from "../../container/albumGeneralInfo/albumGeneralInfo";
+import Tracklist from '../../container/tracklist/tracklist';
+import TrackCollection from '../../container/trackCollection/trackCollection';
+import GenreCollection from '../../container/genreCollection/genreCollection';
+import AlbumGeneralInfo from '../../container/albumGeneralInfo/albumGeneralInfo';
 import AlbumPopularity from '../../container/albumPopularity/albumPopularity';
 import LinkCollection from '../../container/linkCollection/linkCollection';
 import IdCollection from '../../container/idCollection/idCollection';
@@ -12,11 +12,23 @@ import Copyrights from '../../container/copyrights/copyrights';
 
 const spotifyApi = new SpotifyWebApi();
 
-class AlbumPage extends React.Component {
+interface Props {
+    albumId: string,
+    error: (error: SpotifyWebApi.ErrorObject) => void
 
-    constructor(props) {
+}
+
+interface State {
+    album?: SpotifyApi.SingleAlbumResponse
+    recommendations?: SpotifyApi.RecommendationsObject
+}
+
+
+class AlbumPage extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
-        this.state = { album: '', recommendations: '', };
+        this.state = { album: undefined, recommendations: undefined, };
     }
 
     componentDidMount() {
@@ -36,7 +48,7 @@ class AlbumPage extends React.Component {
                 for (var i = 0; i < 5; i++) {
                     randomSongs[i] = albumTracks.items[Math.floor(Math.random() * albumTracks.items.length)].id;
                 }
-                var songArg = randomSongs.join(",");
+                var songArg = randomSongs.join(',');
                 spotifyApi.getRecommendations({
                     seed_tracks: songArg,
                     limit: 5
@@ -45,6 +57,7 @@ class AlbumPage extends React.Component {
                         this.props.error(error3);
                         return;
                     }
+                    console.log(recommendations);
                     this.setState({
                         album: album,
                         recommendations: recommendations
@@ -55,17 +68,17 @@ class AlbumPage extends React.Component {
     }
 
     render() {
-        if (this.state.album === '' || this.state.recommendations === '') {
+        if (this.state.album === undefined || this.state.recommendations === undefined) {
             return null;
         }
         var album = this.state.album;
         var recommendations = this.state.recommendations;
         return <div className="contentContainer">
-            <ContentHeader title={album.name} images={album.images} contentType="album" />
-            <AlbumGeneralInfo type={album.album_type} artists={album.artists} />
+            <ContentHeader title={album.name} imageUrl={album.images[0].url} contentType="album" />
+            <AlbumGeneralInfo album={album} />
             <div className="sectionItem">Released {album.release_date} on {album.label}</div>
             <GenreCollection genres={album.genres} />
-            <AlbumPopularity popularity={album.popularity} followers={album.followers} />
+            <AlbumPopularity popularity={album.popularity} />
             <div className="seperator" />
             <h2>tracks</h2>
             <Tracklist tracks={album.tracks.items} />
@@ -81,7 +94,7 @@ class AlbumPage extends React.Component {
             <h2>artist links</h2>
             <LinkCollection urls={album.external_urls} />
             <div className="seperator" />
-        </div>
+        </div>;
     }
 }
 

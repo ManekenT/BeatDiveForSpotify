@@ -1,10 +1,14 @@
-import Bar from "../bar/bar";
+import Bar from '../bar/bar';
 
-function AlbumPopularity(props) {
+interface Props {
+    popularity: number
+}
+
+function AlbumPopularity(props: Props) {
     return <div id="popularityLabel" className="sectionItem">
         <Bar value={props.popularity} />
         <div>popularity</div>
-    </div>
+    </div>;
 }
 
 export default AlbumPopularity;

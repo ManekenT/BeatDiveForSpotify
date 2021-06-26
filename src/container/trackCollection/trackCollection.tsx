@@ -1,7 +1,11 @@
-import Track from "../track/track";
+import Track from '../track/track';
 
-function TrackCollection(props) {
-    var trackComponents = [];
+interface Props {
+    tracks: any
+}
+
+function TrackCollection(props: Props) {
+    var trackComponents: any[] = [];
     for (var key in props.tracks) {
         var value = props.tracks[key];
         trackComponents.push(
@@ -10,7 +14,7 @@ function TrackCollection(props) {
     }
     return <div className="trackCollection sectionItem">
         {trackComponents}
-    </div>
+    </div>;
 }
 
 export default TrackCollection;

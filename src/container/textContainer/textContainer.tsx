@@ -1,7 +1,11 @@
-function TextContainer(props) {
+interface Props {
+    children: any
+}
+
+function TextContainer(props: Props) {
     return <div id="textContainer">
         {props.children}
-    </div>
+    </div>;
 }
 
 export default TextContainer;

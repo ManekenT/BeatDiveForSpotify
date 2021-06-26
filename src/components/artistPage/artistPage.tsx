@@ -9,10 +9,21 @@ import Tracklist from '../../container/tracklist/tracklist';
 
 const spotifyApi = new SpotifyWebApi();
 
-class ArtistPage extends React.Component {
-    constructor(props) {
+interface Props {
+    artistId: string
+    error: (error: SpotifyWebApi.ErrorObject) => void
+}
+
+interface State {
+    artist?: SpotifyApi.ArtistObjectFull
+    recommendations?: SpotifyApi.RecommendationsObject
+    tracks?: SpotifyApi.TrackObjectFull[]
+}
+
+class ArtistPage extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
-        this.state = { artist: '', recommendations: '', tracks: '' };
+        this.state = { artist: undefined, recommendations: undefined, tracks: undefined };
     }
 
     componentDidMount() {
@@ -32,7 +43,7 @@ class ArtistPage extends React.Component {
                         this.setState({
                             artist: artist,
                             recommendations: recommendations,
-                            tracks: tracks
+                            tracks: tracks.tracks
                         });
                         // TODO related artists
                     }
@@ -42,19 +53,19 @@ class ArtistPage extends React.Component {
     }
 
     render() {
-        if (this.state.artist === '') {
+        if (this.state.artist === undefined || this.state.recommendations === undefined || this.state.tracks === undefined) {
             return null;
         }
         var artist = this.state.artist;
         var recommendations = this.state.recommendations;
         var tracks = this.state.tracks;
         return <div className="contentContainer">
-            <ContentHeader title={artist.name} images={artist.images} contentType='artist' />
+            <ContentHeader title={artist.name} imageUrl={artist.images[0].url} contentType='artist' />
             <GenreCollection genres={artist.genres} />
             <ArtistPopularity popularity={artist.popularity} followers={artist.followers.total} />
             <div className="seperator" />
             <h2>top tracks</h2>
-            <Tracklist tracks={tracks.tracks} />
+            <Tracklist tracks={tracks} />
             <div className="seperator" />
             <h2>spotify recommendations</h2>
             <TrackCollection tracks={recommendations.tracks} />
@@ -62,7 +73,7 @@ class ArtistPage extends React.Component {
             <h2>artist links</h2>
             <LinkCollection urls={artist.external_urls} />
             <div className="seperator" />
-        </div>
+        </div>;
     }
 }
 

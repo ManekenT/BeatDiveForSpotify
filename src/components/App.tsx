@@ -1,11 +1,11 @@
 import React from 'react';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
 import SpotifyWebApi from 'spotify-web-api-js';
 import * as util from '../lib/util';
 import './App.css';
 import Header from './header/header';
-import TrackPage from './trackPage/trackPage'
-import AlbumPage from './albumPage/albumPage'
+import TrackPage from './trackPage/trackPage';
+import AlbumPage from './albumPage/albumPage';
 import PlaylistPage from './playlistPage/playlistPage';
 import ArtistPage from './artistPage/artistPage';
 import UserPage from './userPage/userPage';
@@ -17,15 +17,22 @@ const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
 const userScopes = 'user-read-currently-playing';
 const authCookie = 'authCode';
-var authCode;
+var authCode = null;
 var fragmentArgs;
-var queryArgs;
+var queryArgs: any;
 
+interface Props {
 
+}
 
-class App extends React.Component {
+interface State {
+    type: string
+    id: string
+}
 
-    constructor(props) {
+class App extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.state = { type: 'default', id: '' };
         this.handleApiError = this.handleApiError.bind(this);
@@ -36,12 +43,14 @@ class App extends React.Component {
         this.loadCurrentUser = this.loadCurrentUser.bind(this);
         this.authorize = this.authorize.bind(this);
 
-        window.addEventListener("dragover", function (e) {
+        window.addEventListener('dragover', function (e) {
             e.preventDefault();
         }, false);
-        window.addEventListener("drop", function (e) {
+        window.addEventListener('drop', function (e) {
             e.preventDefault();
-            processDroppedContent(e.dataTransfer.getData("text"));
+            if (e.dataTransfer !== null) {
+                processDroppedContent(e.dataTransfer.getData('text'));
+            }
         }, false);
 
         // URL Argumente parsen
@@ -59,35 +68,49 @@ class App extends React.Component {
             });
             if (fragmentArgs['state']) {
                 stateObject = util.parseStateString(fragmentArgs['state']);
-                loadContent(stateObject.id, stateObject.type)
+                loadContent(stateObject.id, stateObject.type);
             } else {
-                window.location.href = window.location.origin
+                window.location.href = window.location.origin;
             }
         } else if (queryArgs['error']) {
-            this.state.type = 'loginAppeal'
             // Erster Pageload nach unvollständiger Auth
+            this.setState({
+                type: 'loginAppeal'
+            });
         }
 
 
         if (Cookies.get(authCookie)) {
             authCode = Cookies.get(authCookie);
+            if (authCode === undefined) {
+                authCode = null;
+            }
             // Der User hat einen AuthToken, der vermeintlich noch gültig ist
             console.log('Spotify Authentication Code:' + authCode);
             spotifyApi.setAccessToken(authCode);
         }
 
+        console.log(queryArgs['id']);
+        console.log(queryArgs['id'] !== '');
         // Content zur ID laden
-        if (queryArgs['id'] && queryArgs['type']) {
-            this.state.id = queryArgs['id'];
-            this.state.type = queryArgs['type'];
+        if (queryArgs['id'] !== '') {
+            console.log("setting state");
+            this.state = {
+                id: queryArgs['id'],
+                type: queryArgs['type']
+            }
         } else if (fragmentArgs['state']) {
             stateObject = util.parseStateString(fragmentArgs['state']);
-            this.state.id = stateObject.id;
-            this.state.type = stateObject.type;
+            this.state = {
+                id: stateObject.id,
+                type: stateObject.type
+            };
         }
     }
 
     render() {
+        console.log("ID: " + this.state.id);
+        console.log(this.state);
         var content;
         if (this.state.type === 'default') {
             content = <TextContainer>
@@ -98,22 +121,22 @@ class App extends React.Component {
                 Something is blocking requests to the spotify api.
                 Please allow this site to access to <MarkedText>api.spotify.com</MarkedText> and refresh the page.
                 Thanks!
-            </TextOverlay>
+            </TextOverlay>;
         } else if (this.state.type === 'loginAppeal') {
             content = <TextOverlay>
                 Please authorize this site with spotify.
-                It doesn't really make sense without access to the Spotify Api.
-            </TextOverlay>
+                It doesn&apost really make sense without access to the Spotify Api.
+            </TextOverlay>;
         } else if (this.state.type === 'track') {
-            content = <TrackPage trackId={this.state.id} error={this.handleApiError} />
+            content = <TrackPage trackId={this.state.id} error={this.handleApiError} />;
         } else if (this.state.type === 'album') {
-            content = <AlbumPage albumId={this.state.id} error={this.handleApiError} />
+            content = <AlbumPage albumId={this.state.id} error={this.handleApiError} />;
         } else if (this.state.type === 'user') {
-            content = <UserPage userId={this.state.id} error={this.handleApiError} />
+            content = <UserPage userId={this.state.id} error={this.handleApiError} />;
         } else if (this.state.type === 'playlist') {
-            content = <PlaylistPage playlistId={this.state.id} error={this.handleApiError} />
+            content = <PlaylistPage playlistId={this.state.id} error={this.handleApiError} />;
         } else if (this.state.type === 'artist') {
-            content = <ArtistPage artistId={this.state.id} error={this.handleApiError} />
+            content = <ArtistPage artistId={this.state.id} error={this.handleApiError} />;
         }
         return <div>
             <Header
@@ -132,62 +155,62 @@ class App extends React.Component {
     loadCurrentSong() {
         spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
             if (error) {
-                this.handleApiError(error)
+                this.handleApiError(error);
                 return;
             }
             if (track.item) {
                 loadContent(track.item.id, 'track');
             }
-        })
+        });
     }
 
     loadCurrentAlbum() {
         spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
             if (error) {
-                this.handleApiError(error)
+                this.handleApiError(error);
                 return;
             }
             if (track.item) {
                 loadContent(track.item.album.id, 'album');
             }
-        })
+        });
     }
 
     loadCurrentArtist() {
         spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
             if (error) {
-                this.handleApiError(error)
+                this.handleApiError(error);
                 return;
             }
             if (track.item) {
                 loadContent(track.item.artists[0].id, 'artist');
             }
-        })
+        });
     }
 
     loadCurrentPlaylist() {
         spotifyApi.getMyCurrentPlayingTrack({}, (error, track) => {
             if (error) {
-                this.handleApiError(error)
+                this.handleApiError(error);
                 return;
             }
-            if (track.context && track.context.type === 'playlist') {
+            if (track.context && track.context.type === 'playlist' && track.context.external_urls) {
                 processDroppedContent(track.context.external_urls['spotify']);
             }
-        })
+        });
     }
 
     loadCurrentUser() {
         spotifyApi.getMe({}, (error, user) => {
             if (error) {
-                this.handleApiError(error)
+                this.handleApiError(error);
                 return;
             }
             loadContent(user.id, 'user');
-        })
+        });
     }
 
-    handleApiError(error) {
+    handleApiError(error: SpotifyWebApi.ErrorObject) {
         console.error(error);
         if (error.status === 401) {
             // Auth Code is not valid anymore
@@ -196,7 +219,7 @@ class App extends React.Component {
         } else if (error.status === 0) {
             this.setState({
                 type: 'authError'
-            })
+            });
         }
     }
 
@@ -207,7 +230,7 @@ class App extends React.Component {
         } else if (queryArgs['state']) {
             stateString = '&state=' + queryArgs['state'];
         }
-        window.location.href = "https://accounts.spotify.com/authorize?client_id=" + clientId + "&redirect_uri=" + window.location.origin + "&response_type=token&scope=" + userScopes + stateString;
+        window.location.href = 'https://accounts.spotify.com/authorize?client_id=' + clientId + '&redirect_uri=' + window.location.origin + '&response_type=token&scope=' + userScopes + stateString;
     }
 }
 
@@ -217,7 +240,7 @@ export default App;
 
 
 
-function processDroppedContent(droppedContent) {
+function processDroppedContent(droppedContent: string) {
     var urlPart = droppedContent.slice(0, 25);
     if (urlPart !== 'https://open.spotify.com/') {
         console.log('Not a valid spotify url: ' + urlPart);
@@ -247,6 +270,6 @@ function processDroppedContent(droppedContent) {
     }
 }
 
-function loadContent(id, type) {
+function loadContent(id: string, type: string) {
     window.location.href = window.location.origin + '?id=' + id + '&type=' + type;
 }

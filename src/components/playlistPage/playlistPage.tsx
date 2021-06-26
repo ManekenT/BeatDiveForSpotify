@@ -4,10 +4,19 @@ import ContentHeader from '../../container/contentHeader/contentHeader';
 
 const spotifyApi = new SpotifyWebApi();
 
-class PlaylistPage extends React.Component {
-    constructor(props) {
+interface Props {
+    playlistId: string
+    error: (error: SpotifyWebApi.ErrorObject) => void
+}
+
+interface State {
+    playlist?: SpotifyApi.PlaylistObjectFull
+}
+
+class PlaylistPage extends React.Component<Props, State> {
+    constructor(props: Props) {
         super(props);
-        this.state = { playlist: '' };
+        this.state = { playlist: undefined };
     }
 
     componentDidMount() {
@@ -22,12 +31,12 @@ class PlaylistPage extends React.Component {
     }
 
     render() {
-        if (this.state.playlist === '') {
+        if (this.state.playlist === undefined) {
             return null;
         }
         return <div className="contentContainer">
-            <ContentHeader title={this.state.playlist.name} images={this.state.playlist.images} contentType='playlist' />
-        </div>
+            <ContentHeader title={this.state.playlist.name} imageUrl={this.state.playlist.images[0].url} contentType='playlist' />
+        </div>;
     }
 }
 

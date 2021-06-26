@@ -1,8 +1,19 @@
+import SpotifyWebApi from 'spotify-web-api-js';
 import './header.css';
 import React from 'react';
 import AccountLabel from '../accountLabel/accountLabel';
 
-class Header extends React.Component {
+interface Props {
+    loadSong: () => void
+    loadAlbum: () => void
+    loadArtist: () => void
+    loadPlaylist: () => void
+    loadUser: () => void
+    authorize: () => void
+    error: (error: SpotifyWebApi.ErrorObject) => void
+}
+
+class Header extends React.Component<Props> {
     render() {
         return <div id="header">
             <div id="logoText" className="item">BeatDive for Spotify</div>

@@ -3,33 +3,33 @@
 //const modes = ['Minor', 'Major'];
 
 export const parseFragment = () => {
-    var hash = window.location.hash.replace(/#/g, '');
-    var all = hash.split('&');
-    var args: any = {};
+    const hash = window.location.hash.replace(/#/g, '');
+    const all = hash.split('&');
+    const args: any = {};
     all.forEach(function (keyvalue) {
-        var kv: string[] = keyvalue.split('=');
-        var key: string = kv[0];
+        const kv: string[] = keyvalue.split('=');
+        const key: string = kv[0];
         args[key] = kv[1];
     });
     return args;
 };
 
 export const parseQuery = () => {
-    var hash = window.location.search.replace(/\?/g, '');
-    var all = hash.split('&');
-    var args: any = {};
+    const hash = window.location.search.replace(/\?/g, '');
+    const all = hash.split('&');
+    const args: any = {};
     all.forEach(function (keyvalue) {
-        var kv = keyvalue.split('=');
-        var key = kv[0];
+        const kv = keyvalue.split('=');
+        const key = kv[0];
         args[key] = kv[1];
     });
     return args;
 };
 
 export const msToDuration = (ms: number) => {
-    var i = Math.floor(ms / 1000);
-    var seconds = i % 60;
-    var minutes = (i - seconds) / 60;
+    const i = Math.floor(ms / 1000);
+    const seconds = i % 60;
+    const minutes = (i - seconds) / 60;
     if (seconds < 10) {
         return '' + minutes + ':0' + seconds;
     }
@@ -44,7 +44,7 @@ export const getExplicit = (explicit: boolean) => {
 };
 
 export const parseStateString = (string: string) => {
-    var state = string.split('_');
+    const state = string.split('_');
     return {
         id: state[0],
         type: state[1]

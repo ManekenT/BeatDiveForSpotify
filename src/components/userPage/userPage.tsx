@@ -36,7 +36,7 @@ class UserPage extends React.Component<Props, State> {
         if (this.state.user === undefined) {
             return null;
         }
-        var imageUrl = undefined;
+        let imageUrl = undefined;
         if (this.state.user.images !== undefined) {
             imageUrl = this.state.user.images[0].url;
         }

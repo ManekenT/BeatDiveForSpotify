@@ -3,7 +3,7 @@ interface Props {
 }
 
 function IdCollection(props: Props) {
-    var idComponents = [];
+    const idComponents = [];
     if (props.ids.ean !== undefined) {
         idComponents.push(
             <div key="ean">

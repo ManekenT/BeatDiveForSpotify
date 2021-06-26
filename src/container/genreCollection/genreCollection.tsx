@@ -8,9 +8,9 @@ function GenreCollection(props: Props) {
     if (props.genres.length === 0) {
         return null;
     }
-    var genreTagComponents = [];
-    for (var key in props.genres) {
-        var value = props.genres[key];
+    const genreTagComponents = [];
+    for (const key in props.genres) {
+        const value = props.genres[key];
         genreTagComponents.push(
             <Genre name={value} key={key} />
         );

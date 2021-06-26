@@ -17,9 +17,9 @@ const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
 const userScopes = 'user-read-currently-playing';
 const authCookie = 'authCode';
-var authCode = null;
-var fragmentArgs;
-var queryArgs: any;
+let authCode = null;
+let fragmentArgs;
+let queryArgs: any;
 
 interface Props {
 
@@ -56,12 +56,12 @@ class App extends React.Component<Props, State> {
         // URL Argumente parsen
         fragmentArgs = util.parseFragment();
         queryArgs = util.parseQuery();
-        var stateObject;
+        let stateObject;
 
         if (fragmentArgs['access_token']) {
             // Es ist der erste Pageload nach der Authentifizierung
             authCode = fragmentArgs['access_token'];
-            var expireTime = fragmentArgs['expires_in'];
+            let expireTime = fragmentArgs['expires_in'];
             expireTime = new Date(new Date().getTime() + (expireTime - 60) * 1000);
             Cookies.set(authCookie, authCode, {
                 expires: expireTime
@@ -111,7 +111,7 @@ class App extends React.Component<Props, State> {
     render() {
         console.log("ID: " + this.state.id);
         console.log(this.state);
-        var content;
+        let content;
         if (this.state.type === 'default') {
             content = <TextContainer>
                 Drag and drop a Spotify link over here. Artist, user, song, playlist or album!
@@ -224,7 +224,7 @@ class App extends React.Component<Props, State> {
     }
 
     authorize() {
-        var stateString = '';
+        let stateString = '';
         if (queryArgs['id'] && queryArgs['type']) {
             stateString = '&state=' + queryArgs['id'] + '_' + queryArgs['type'];
         } else if (queryArgs['state']) {
@@ -241,30 +241,30 @@ export default App;
 
 
 function processDroppedContent(droppedContent: string) {
-    var urlPart = droppedContent.slice(0, 25);
+    const urlPart = droppedContent.slice(0, 25);
     if (urlPart !== 'https://open.spotify.com/') {
         console.log('Not a valid spotify url: ' + urlPart);
         return;
     }
-    var infoPart = droppedContent.slice(25, droppedContent.length);
+    const infoPart = droppedContent.slice(25, droppedContent.length);
     if (infoPart.startsWith('artist')) {
-        var artistId = infoPart.slice(7, infoPart.length);
+        const artistId = infoPart.slice(7, infoPart.length);
         console.log('Dropped artist id: ' + artistId);
         loadContent(artistId, 'artist');
     } else if (infoPart.startsWith('track')) {
-        var trackId = infoPart.slice(6, infoPart.length);
+        const trackId = infoPart.slice(6, infoPart.length);
         console.log('Dropped track id: ' + trackId);
         loadContent(trackId, 'track');
     } else if (infoPart.startsWith('album')) {
-        var albumId = infoPart.slice(6, infoPart.length);
+        const albumId = infoPart.slice(6, infoPart.length);
         console.log('Dropped album id: ' + albumId);
         loadContent(albumId, 'album');
     } else if (infoPart.startsWith('user')) {
-        var userId = infoPart.slice(5, infoPart.length);
+        const userId = infoPart.slice(5, infoPart.length);
         console.log('Dropped user id: ' + userId);
         loadContent(userId, 'user');
     } else if (infoPart.startsWith('playlist')) {
-        var playlistId = infoPart.slice(9, infoPart.length);
+        const playlistId = infoPart.slice(9, infoPart.length);
         console.log('Dropped playlist id: ' + playlistId);
         loadContent(playlistId, 'playlist');
     }

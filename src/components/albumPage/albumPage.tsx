@@ -44,11 +44,11 @@ class AlbumPage extends React.Component<Props, State> {
                     this.props.error(error2);
                     return;
                 }
-                var randomSongs = [];
-                for (var i = 0; i < 5; i++) {
+                const randomSongs = [];
+                for (let i = 0; i < 5; i++) {
                     randomSongs[i] = albumTracks.items[Math.floor(Math.random() * albumTracks.items.length)].id;
                 }
-                var songArg = randomSongs.join(',');
+                const songArg = randomSongs.join(',');
                 spotifyApi.getRecommendations({
                     seed_tracks: songArg,
                     limit: 5
@@ -71,8 +71,8 @@ class AlbumPage extends React.Component<Props, State> {
         if (this.state.album === undefined || this.state.recommendations === undefined) {
             return null;
         }
-        var album = this.state.album;
-        var recommendations = this.state.recommendations;
+        const album = this.state.album;
+        const recommendations = this.state.recommendations;
         return <div className="contentContainer">
             <ContentHeader title={album.name} imageUrl={album.images[0].url} contentType="album" />
             <AlbumGeneralInfo album={album} />

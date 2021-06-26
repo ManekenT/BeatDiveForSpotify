@@ -26,7 +26,7 @@ class ArtistPage extends React.Component<Props, State> {
         this.state = { artist: undefined, recommendations: undefined, tracks: undefined };
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         spotifyApi.getArtist(this.props.artistId, {}, (error1, artist) => {
             spotifyApi.getArtistTopTracks(this.props.artistId, 'from_token', {}, (error2, tracks) => {
                 spotifyApi.getRecommendations({
@@ -56,9 +56,9 @@ class ArtistPage extends React.Component<Props, State> {
         if (this.state.artist === undefined || this.state.recommendations === undefined || this.state.tracks === undefined) {
             return null;
         }
-        var artist = this.state.artist;
-        var recommendations = this.state.recommendations;
-        var tracks = this.state.tracks;
+        const artist = this.state.artist;
+        const recommendations = this.state.recommendations;
+        const tracks = this.state.tracks;
         return <div className="contentContainer">
             <ContentHeader title={artist.name} imageUrl={artist.images[0].url} contentType='artist' />
             <GenreCollection genres={artist.genres} />

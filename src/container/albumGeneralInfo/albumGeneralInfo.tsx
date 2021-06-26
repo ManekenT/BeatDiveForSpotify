@@ -1,10 +1,10 @@
 function AlbumGeneralInfo(props: Props) {
-    var typeText = 'A';
+    let typeText = 'A';
     if (props.album.album_type === 'album') {
         typeText += 'n';
     }
     typeText += ` ${props.album.album_type} by `;
-    var artistNames: string[] = [];
+    const artistNames: string[] = [];
     props.album.artists.forEach((artist) => {
         artistNames.push(artist.name);
     });

@@ -7,7 +7,7 @@ interface Props {
 }
 
 function ContentHeader(props: Props) {
-    var imageSrc: string;
+    let imageSrc: string;
     if (props.imageUrl === undefined) {
         imageSrc = placeholderImg;
     } else {

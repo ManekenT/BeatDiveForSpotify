@@ -4,7 +4,7 @@ interface Props {
 }
 
 function Copyrights(props: Props) {
-    var copyrightComponents: any[] = [];
+    const copyrightComponents: any[] = [];
     props.copyrights.forEach((object) => {
         if (object.type === 'C') {
             copyrightComponents.push(

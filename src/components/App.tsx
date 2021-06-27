@@ -99,9 +99,9 @@ class App extends React.Component<Props> {
                 <Route path="/loginAppeal">
                     <TextOverlay>
                         Please authorize this site with spotify.
-                        It doesn&apost really make sense without access to the Spotify Api.
+                        It doesn't really make sense without access to the Spotify Api.
+                        <button onClick={this.authorize}>authorize</button>
                     </TextOverlay>
-                    <button onClick={this.authorize}>authorize</button>
                 </Route>
                 <Route path="/authError">
                     <TextOverlay>

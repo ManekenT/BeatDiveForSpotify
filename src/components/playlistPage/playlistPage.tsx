@@ -1,11 +1,15 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import React from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
 
-interface Props {
-    playlistId: string
+interface Params {
+    id: string
+}
+
+interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
 }
 
@@ -20,7 +24,7 @@ class PlaylistPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        spotifyApi.getPlaylist(this.props.playlistId, {}, (error, playlist) => {
+        spotifyApi.getPlaylist(this.props.match.params.id, {}, (error, playlist) => {
             if (error) {
                 this.props.error(error);
             }
@@ -40,4 +44,4 @@ class PlaylistPage extends React.Component<Props, State> {
     }
 }
 
-export default PlaylistPage;
+export default withRouter(PlaylistPage);

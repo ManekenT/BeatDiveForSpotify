@@ -1,46 +1,39 @@
 import SpotifyWebApi from 'spotify-web-api-js';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
+import { RouteComponentProps, withRouter } from "react-router-dom";
 
 const spotifyApi = new SpotifyWebApi();
 
-interface Props {
-    trackId: string
+interface Params {
+    id: string
+}
+
+interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
 }
 
-interface State {
-    track?: SpotifyApi.TrackObjectFull
-}
+function TrackPage(props: Props) {
+    const [track, setTrack] = useState<SpotifyApi.SingleTrackResponse>();
 
-class TrackPage extends React.Component<Props, State> {
 
-    constructor(props: Props) {
-        super(props);
-        this.state = { track: undefined };
-    }
-
-    componentDidMount() {
-        spotifyApi.getTrack(this.props.trackId, {}, (error, track) => {
+    useEffect(() => {
+        spotifyApi.getTrack(props.match.params.id, {}, (error, track) => {
             if (error) {
-                this.props.error(error);
+                props.error(error);
             }
-            this.setState({
-                track: track
-            });
+            setTrack(track);
         });
-    }
+    }, [props]);
 
-    render() {
-        if (this.state.track === undefined) {
-            return null;
-        }
-        return <div className="contentContainer">
-            <ContentHeader
-                title={this.state.track.name} imageUrl={this.state.track.album.images[0].url} contentType='Track'
-            />
-        </div>;
+    if (track === undefined) {
+        return null;
     }
+    return <div className="contentContainer">
+        <ContentHeader
+            title={track.name} imageUrl={track.album.images[0].url} contentType='Track'
+        />
+    </div>;
 }
 
-export default TrackPage;
+export default withRouter(TrackPage);

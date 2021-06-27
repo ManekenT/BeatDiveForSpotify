@@ -1,11 +1,15 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import React from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
 
-interface Props {
-    userId: string
+interface Params {
+    id: string
+}
+
+interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
 }
 
@@ -21,7 +25,7 @@ class UserPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        spotifyApi.getUser(this.props.userId, {}, (error, user) => {
+        spotifyApi.getUser(this.props.match.params.id, {}, (error, user) => {
             if (error) {
                 this.props.error(error);
                 return;
@@ -46,4 +50,4 @@ class UserPage extends React.Component<Props, State> {
     }
 }
 
-export default UserPage;
+export default withRouter(UserPage);

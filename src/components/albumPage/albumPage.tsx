@@ -9,11 +9,15 @@ import AlbumPopularity from '../../container/albumPopularity/albumPopularity';
 import LinkCollection from '../../container/linkCollection/linkCollection';
 import IdCollection from '../../container/idCollection/idCollection';
 import Copyrights from '../../container/copyrights/copyrights';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
 
-interface Props {
-    albumId: string,
+interface Params {
+    id: string
+}
+
+interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
 
 }
@@ -32,12 +36,12 @@ class AlbumPage extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        spotifyApi.getAlbum(this.props.albumId, {}, (error1, album) => {
+        spotifyApi.getAlbum(this.props.match.params.id, {}, (error1, album) => {
             if (error1) {
                 this.props.error(error1);
                 return;
             }
-            spotifyApi.getAlbumTracks(this.props.albumId, {
+            spotifyApi.getAlbumTracks(this.props.match.params.id, {
                 limit: 50
             }, (error2, albumTracks) => {
                 if (error2) {
@@ -57,7 +61,6 @@ class AlbumPage extends React.Component<Props, State> {
                         this.props.error(error3);
                         return;
                     }
-                    console.log(recommendations);
                     this.setState({
                         album: album,
                         recommendations: recommendations
@@ -98,4 +101,4 @@ class AlbumPage extends React.Component<Props, State> {
     }
 }
 
-export default AlbumPage;
+export default withRouter(AlbumPage);

@@ -6,11 +6,15 @@ import ArtistPopularity from '../../container/artistPopularity/artistPopularity'
 import TrackCollection from '../../container/trackCollection/trackCollection';
 import LinkCollection from '../../container/linkCollection/linkCollection';
 import Tracklist from '../../container/tracklist/tracklist';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
 
-interface Props {
-    artistId: string
+interface Params {
+    id: string
+}
+
+interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
 }
 
@@ -27,10 +31,10 @@ class ArtistPage extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        spotifyApi.getArtist(this.props.artistId, {}, (error1, artist) => {
-            spotifyApi.getArtistTopTracks(this.props.artistId, 'from_token', {}, (error2, tracks) => {
+        spotifyApi.getArtist(this.props.match.params.id, {}, (error1, artist) => {
+            spotifyApi.getArtistTopTracks(this.props.match.params.id, 'from_token', {}, (error2, tracks) => {
                 spotifyApi.getRecommendations({
-                    seed_artists: this.props.artistId,
+                    seed_artists: this.props.match.params.id,
                     limit: 5
                 }, (error3, recommendations) => {
                     if (error1) {
@@ -77,4 +81,4 @@ class ArtistPage extends React.Component<Props, State> {
     }
 }
 
-export default ArtistPage;
+export default withRouter(ArtistPage);

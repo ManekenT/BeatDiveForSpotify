@@ -57,6 +57,7 @@ class App extends React.Component<Props> {
                 console.log(access_token)
                 Cookies.set('authCode', access_token);
                 console.log("Cookie should be set to: " + access_token);
+                spotifyApi.setAccessToken(access_token);
             } else {
                 //Noch keine Anmeldung erfolgt => Weiterleiten auf Spotify Auth Seite
                 this.authorize();

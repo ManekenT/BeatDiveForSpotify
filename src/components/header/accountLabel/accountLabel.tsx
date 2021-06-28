@@ -36,14 +36,14 @@ export class AccountLabel extends React.Component<Props, State> {
 
     render() {
         if (this.state.me === undefined) {
-            return <button className="item" onClick={this.props.authorize}>Authorize</button>;
+            return <button className="" onClick={this.props.authorize}>Authorize</button>;
         }
         if (this.state.me.images !== undefined) {
-            var image: any = <img id="accountImage" src={this.state.me.images[0].url} alt="profile" />
+            var image: any = <img className='object-contain h-full' src={this.state.me.images[0].url} alt="profile" />
         }
-        return <button id="accountLabel" onClick={this.props.loadUser}>
+        return <button className='flex items-center headerButton p-0' onClick={this.props.loadUser}>
             {image}
-            <div id="accountName">{this.state.me.display_name}</div>
+            <div className="px-2 hidden 2xl:inline">{this.state.me.display_name}</div>
         </button>;
     }
 }

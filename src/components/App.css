@@ -9,80 +9,11 @@
 }
 
 body {
-    background-color: var(--color-dark);
-    color: var(--color-light);
-    font-family: 'Montserrat', sans-serif;
+    @apply bg-gray-900 text-gray-100
 }
 
 h2 {
     margin: 10px 0;
-}
-
-button {
-    font-family: 'Arvo', serif;
-    background-color: var(--color-dark);
-    border: 2px solid var(--color-light);
-    color: var(--color-light);
-    outline-width: 0;
-    font-weight: bolder;
-}
-
-button:hover {
-    background-color: var(--color-light);
-    color: var(--color-dark);
-}
-
-button:active {
-    background-color: var(--color-light);
-    color: var(--color-dark);
-    transform: scale(0.95, 0.95);
-}
-
-button:focus {
-    border-style: dashed;
-}
-
-a {
-    color: var(--color-light);
-    outline-width: 0;
-}
-
-a:focus {
-    border-style: dashed;
-}
-
-#header {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    background-color: var(--color-dark);
-    color: var(--color-light);
-    font-family: 'Arvo', serif;
-    font-weight: 600;
-}
-
-#logoText {
-    font-size: 40px;
-    flex-grow: 1;
-}
-
-#accountName {
-    font-size: 20px;
-    font-weight: bold;
-    margin: 0 10px;
-}
-
-#accountImage {
-    height: 50px;
-}
-
-#accountLabel {
-    display: flex;
-    align-items: center;
-    border: 3px solid var(--color-light);
-    outline-width: 0px;
-    padding: 0;
 }
 
 #textContainer {

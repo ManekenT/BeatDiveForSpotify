@@ -1,4 +1,3 @@
 .headerButton {
-    font-size: 15px;
-    height: 40px;
+    @apply hover:bg-gray-100 hover:text-gray-900 border-gray-100 border-2 h-12 p-1 sm:border-4 sm:h-16 sm:p-2;
 }

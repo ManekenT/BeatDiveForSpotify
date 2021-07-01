@@ -32,11 +32,11 @@ function UserPage(props: Props) {
     if (user === undefined) {
         return null;
     }
-    let imageUrl = undefined;
+    /*let imageUrl = undefined;
     if (user.images !== undefined) {
         imageUrl = user.images[0].url;
         imageUrl = imageUrl;
-    }
+    }*/
     return null;
 }
 

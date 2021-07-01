@@ -1,5 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -11,43 +11,35 @@ interface Params {
 
 interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
+    imageLoaded: (imageUrl: string) => void
 }
 
-interface State {
-    user?: SpotifyApi.UserObjectPublic
-}
+function UserPage(props: Props) {
 
-class UserPage extends React.Component<Props, State> {
+    const [user, setUser] = useState<SpotifyApi.UserObjectPublic>();
 
-    constructor(props: Props) {
-        super(props);
-        this.state = { user: undefined };
-    }
-
-    componentDidMount() {
-        spotifyApi.getUser(this.props.match.params.id, {}, (error, user) => {
+    useEffect(() => {
+        spotifyApi.getUser(props.match.params.id, {}, (error, user) => {
             if (error) {
-                this.props.error(error);
+                props.error(error);
                 return;
             }
-            this.setState({
-                user: user
-            });
+            if (user.images) {
+                props.imageLoaded(user.images[0].url);
+            }
+            setUser(user);
         });
+    }, [props]);
+    if (user === undefined) {
+        return null;
     }
-
-    render() {
-        if (this.state.user === undefined) {
-            return null;
-        }
-        let imageUrl = undefined;
-        if (this.state.user.images !== undefined) {
-            imageUrl = this.state.user.images[0].url;
-        }
-        return <div className="contentContainer">
-            <ContentHeader title={this.state.user.display_name} imageUrl={imageUrl} contentType="User" />
-        </div >;
+    let imageUrl = undefined;
+    if (user.images !== undefined) {
+        imageUrl = user.images[0].url;
     }
+    return <div className="contentContainer">
+        <ContentHeader title={user.display_name} imageUrl={imageUrl} contentType="User" />
+    </div >;
 }
 
 export default withRouter(UserPage);

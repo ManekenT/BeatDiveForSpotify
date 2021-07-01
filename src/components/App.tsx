@@ -13,6 +13,7 @@ import TextOverlay from '../container/textOverlay/textOverlay';
 import MarkedText from '../container/markedText/markedText';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
 import { parseFragment } from '../lib/util';
+import Vibrant from 'node-vibrant';
 
 const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
@@ -87,6 +88,29 @@ export function App() {
         });
     }
 
+    function imageLoaded(imageUrl: string) {
+        Vibrant.from(imageUrl).getPalette().then(function (palette: any) {
+            let root = document.documentElement;
+            let swatch: any;
+            let pop: number = 0;
+            Object.entries(palette).forEach((entry: any) => {
+                if (entry[1].population > pop) {
+                    pop = entry[1].population;
+                    swatch = entry[1];
+                }
+            });
+            if (swatch) {
+                root.style.setProperty('--color-primary', swatch.hex);
+                root.style.setProperty('--color-secondary', swatch.hex);
+                root.style.setProperty('--color-text', swatch.titleTextColor);
+            } else {
+                root.style.setProperty('--color-primary', root.style.getPropertyValue('--color-primary-default'));
+                root.style.setProperty('--color-secondary', root.style.getPropertyValue('--color-secondary-default'));
+                root.style.setProperty('--color-text', root.style.getPropertyValue('--color-text-default'));
+            }
+        });
+    }
+
     function handleApiError(error: SpotifyWebApi.ErrorObject) {
         console.error(error);
         if (error.status === 401) {
@@ -149,19 +173,19 @@ export function App() {
         />
         <Switch>
             <Route path="/track/:id">
-                <TrackPage error={handleApiError} />
+                <TrackPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/album/:id">
-                <AlbumPage error={handleApiError} />
+                <AlbumPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/user/:id">
-                <UserPage error={handleApiError} />
+                <UserPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/playlist/:id">
-                <PlaylistPage error={handleApiError} />
+                <PlaylistPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/artist/:id">
-                <ArtistPage error={handleApiError} />
+                <ArtistPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/loginAppeal">
                 <TextOverlay>

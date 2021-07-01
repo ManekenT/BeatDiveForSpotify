@@ -1,15 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Arvo:wght@400;700&display=swap');
 :root {
-    --color-primary: #1DB954;
-    --color-primary-accent: #007D2A;
-    --color-light: #FFFFFF;
-    --color-light-accent: #cbcbcb;
-    --color-dark: #181818;
-    --color-dark-accent: #404040;
+    --color-primary: #181818;
+    --color-secondary: #007D2A;
+    --color-text: #FFFFFF;
+    /* STATIC DEFAULTS */
+    --color-primary-default: #181818;
+    --color-secondary-default: #007D2A;
+    --color-text-default: #FFFFFF;
 }
 
 body {
-    @apply bg-gray-900 text-gray-100
+    color: var(--color-text);
+    background-color: var(--color-primary);
+    border-color: var(--color-text);
+    @apply transition-colors duration-500 min-h-screen
 }
 
 h2 {
@@ -17,7 +21,7 @@ h2 {
 }
 
 #textContainer {
-    color: var(--color-light);
+    color: var(--color-text);
     position: fixed;
     /* or absolute */
     top: 50%;
@@ -33,7 +37,8 @@ h2 {
 .titleImage {
     width: 160px;
     border-style: solid;
-    border-color: var(--color-light);
+    border-width: 3px;
+    border-color: var(--color-text);
 }
 
 .title {
@@ -53,9 +58,8 @@ h2 {
 }
 
 #contentType {
-    color: var(--color-light-accent);
     font-size: 30px;
-    font-weight: lighter;
+    font-weight: 500;
     text-align: center;
 }
 
@@ -74,17 +78,17 @@ h2 {
     width: 30%;
     height: 30px;
     background-color: transparent;
-    border: 3px solid var(--color-light);
+    border: 3px solid var(--color-text);
     position: relative;
     text-align: start;
     margin: 0 20px;
 }
 
 .progressBar .progressBarValue {
-    background-color: var(--color-light);
+    background-color: var(--color-text);
     display: inline-block;
     height: 100%;
-    color: var(--color-dark);
+    color: var(--color-primary);
     text-align: center;
 }
 
@@ -93,7 +97,7 @@ h2 {
 }
 
 .tag {
-    border: 3px solid var(--color-light);
+    border: 3px solid var(--color-text);
     font-size: 25px;
     padding: 5px;
 }
@@ -108,7 +112,7 @@ h2 {
 .seperator {
     width: 3%;
     height: 0px;
-    border: 1px solid var(--color-light);
+    border: 1px solid var(--color-text);
     margin: 20px 0;
 }
 
@@ -117,7 +121,7 @@ h2 {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    border: 3px solid var(--color-light);
+    border: 3px solid var(--color-text);
 }
 
 .trackImage {
@@ -159,5 +163,5 @@ h2 {
 }
 
 .markedText {
-    color: var(--color-primary);
+    color: var(--color-secondary);
 }

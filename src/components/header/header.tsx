@@ -15,8 +15,8 @@ interface Props {
 
 class Header extends React.Component<Props> {
     render() {
-        return <div className="font-serif m-2 space-y-2 flex items-center flex-col text-md sm:m-5 sm:text-3xl sm:space-y-4 xl:flex-row xl:space-y-0">
-            <div className="text-2xl font-semibold flex-grow sm:text-5xl ">BeatDive for Spotify</div>
+        return <div className="font-serif p-2 space-y-2 flex items-center flex-col text-md sm:p-5 sm:text-3xl sm:space-y-4 xl:flex-row xl:space-y-0">
+            <div className="text-5xl font-semibold flex-grow sm:text-6xl ml-2">BeatDive</div>
             <div className='flex items-center space-x-1 sm:space-x-4'>
                 <button className='headerButton' onClick={this.props.loadSong} >song</button>
                 <button className='headerButton' onClick={this.props.loadAlbum} >album</button>

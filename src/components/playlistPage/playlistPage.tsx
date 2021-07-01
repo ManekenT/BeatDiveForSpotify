@@ -1,5 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import ContentHeader from '../../container/contentHeader/contentHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
@@ -11,37 +11,30 @@ interface Params {
 
 interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
+    imageLoaded: (imageUrl: string) => void
 }
 
-interface State {
-    playlist?: SpotifyApi.PlaylistObjectFull
-}
+function PlaylistPage(props: Props) {
 
-class PlaylistPage extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props);
-        this.state = { playlist: undefined };
-    }
+    const [playlist, setPlaylist] = useState<SpotifyApi.PlaylistObjectFull>();
 
-    componentDidMount() {
-        spotifyApi.getPlaylist(this.props.match.params.id, {}, (error, playlist) => {
+    useEffect(() => {
+        spotifyApi.getPlaylist(props.match.params.id, {}, (error, playlist) => {
             if (error) {
-                this.props.error(error);
+                props.error(error);
             }
-            this.setState({
-                playlist: playlist
-            });
+            props.imageLoaded(playlist.images[0].url);
+            setPlaylist(playlist);
         });
-    }
 
-    render() {
-        if (this.state.playlist === undefined) {
-            return null;
-        }
-        return <div className="contentContainer">
-            <ContentHeader title={this.state.playlist.name} imageUrl={this.state.playlist.images[0].url} contentType='playlist' />
-        </div>;
+    }, [props]);
+
+    if (playlist === undefined) {
+        return null;
     }
+    return <div className="contentContainer">
+        <ContentHeader title={playlist.name} imageUrl={playlist.images[0].url} contentType='playlist' />
+    </div>;
 }
 
 export default withRouter(PlaylistPage);

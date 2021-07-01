@@ -11,6 +11,7 @@ interface Params {
 
 interface Props extends RouteComponentProps<Params> {
     error: (error: SpotifyWebApi.ErrorObject) => void
+    imageLoaded: (imageUrl: string) => void
 }
 
 function TrackPage(props: Props) {
@@ -23,6 +24,7 @@ function TrackPage(props: Props) {
                 props.error(error);
             }
             setTrack(track);
+            props.imageLoaded(track.album.images[0].url);
         });
     }, [props]);
 

@@ -1,6 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import { useEffect, useState } from 'react';
-import ContentHeader from '../../container/contentHeader/contentHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
@@ -19,7 +18,7 @@ function UserPage(props: Props) {
     const [user, setUser] = useState<SpotifyApi.UserObjectPublic>();
 
     useEffect(() => {
-        spotifyApi.getUser(props.match.params.id, {}, (error, user) => {
+        spotifyApi.getMe((error: SpotifyWebApi.ErrorObject, user: SpotifyApi.UserObjectPrivate) => {
             if (error) {
                 props.error(error);
                 return;
@@ -36,10 +35,9 @@ function UserPage(props: Props) {
     let imageUrl = undefined;
     if (user.images !== undefined) {
         imageUrl = user.images[0].url;
+        imageUrl = imageUrl;
     }
-    return <div className="contentContainer">
-        <ContentHeader title={user.display_name} imageUrl={imageUrl} contentType="User" />
-    </div >;
+    return null;
 }
 
 export default withRouter(UserPage);

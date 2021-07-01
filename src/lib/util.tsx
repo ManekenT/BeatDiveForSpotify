@@ -1,6 +1,6 @@
 
-//const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-//const modes = ['Minor', 'Major'];
+const keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const modes = ['minor', 'major'];
 
 export const parseFragment = (hashFragment: string) => {
     const hash = hashFragment.replace(/#/g, '');
@@ -30,3 +30,11 @@ export const getExplicit = (explicit: boolean) => {
     }
     return 'No';
 };
+
+export const getKey = (number: number) => {
+    return keys[number];
+}
+
+export const getMode = (number: number) => {
+    return modes[number];
+}

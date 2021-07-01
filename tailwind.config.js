@@ -11,7 +11,12 @@ module.exports = {
     colors: {
       gray: colors.gray,
     },
-    extend: {},
+    extend: {
+      transitionProperty: {
+        'width': 'width',
+        'height': 'height'
+      },
+    },
   },
   variants: {
     extend: {},

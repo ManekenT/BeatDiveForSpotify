@@ -1,7 +1,9 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import { useEffect, useState } from 'react';
-import ContentHeader from '../../container/contentHeader/contentHeader';
 import { RouteComponentProps, withRouter } from "react-router-dom";
+import { TitleCard } from './titleCard';
+import { MainInfos } from './mainInfos';
+import { AudioFeatures } from './audioFeatures';
 
 const spotifyApi = new SpotifyWebApi();
 
@@ -16,6 +18,7 @@ interface Props extends RouteComponentProps<Params> {
 
 function TrackPage(props: Props) {
     const [track, setTrack] = useState<SpotifyApi.SingleTrackResponse>();
+    const [audioFeatures, setAudioFeatures] = useState<SpotifyApi.AudioFeaturesObject>();
 
 
     useEffect(() => {
@@ -23,18 +26,28 @@ function TrackPage(props: Props) {
             if (error) {
                 props.error(error);
             }
+
             setTrack(track);
             props.imageLoaded(track.album.images[0].url);
         });
     }, [props]);
 
-    if (track === undefined) {
+    useEffect(() => {
+        spotifyApi.getAudioFeaturesForTrack(props.match.params.id, (error, audioFeatures) => {
+            if (error) {
+                props.error(error);
+            }
+            setAudioFeatures(audioFeatures);
+        });
+    }, [props]);
+
+    if (track === undefined || audioFeatures === undefined) {
         return null;
     }
-    return <div className="contentContainer">
-        <ContentHeader
-            title={track.name} imageUrl={track.album.images[0].url} contentType='Track'
-        />
+    return <div className='flex flex-col items-center mt-12 space-y-16'>
+        <TitleCard track={track} />
+        <MainInfos track={track} audioFeatures={audioFeatures} />
+        <AudioFeatures track={track} audioFeatures={audioFeatures} />
     </div>;
 }
 

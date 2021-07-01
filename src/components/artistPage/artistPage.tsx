@@ -1,11 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import { useEffect, useState } from 'react';
-import ContentHeader from '../../container/contentHeader/contentHeader';
-import GenreCollection from '../../container/genreCollection/genreCollection';
-import ArtistPopularity from '../../container/artistPopularity/artistPopularity';
-import TrackCollection from '../../container/trackCollection/trackCollection';
-import LinkCollection from '../../container/linkCollection/linkCollection';
-import Tracklist from '../../container/tracklist/tracklist';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
@@ -53,21 +47,7 @@ function ArtistPage(props: Props) {
     if (artist === undefined || recommendations === undefined || topTracks === undefined) {
         return null;
     }
-    return <div className="contentContainer">
-        <ContentHeader title={artist.name} imageUrl={artist.images[0].url} contentType='artist' />
-        <GenreCollection genres={artist.genres} />
-        <ArtistPopularity popularity={artist.popularity} followers={artist.followers.total} />
-        <div className="seperator" />
-        <h2>top tracks</h2>
-        <Tracklist tracks={topTracks} />
-        <div className="seperator" />
-        <h2>spotify recommendations</h2>
-        <TrackCollection tracks={recommendations.tracks} />
-        <div className="seperator" />
-        <h2>artist links</h2>
-        <LinkCollection urls={artist.external_urls} />
-        <div className="seperator" />
-    </div>;
+    return null;
 }
 
 export default withRouter(ArtistPage);

@@ -6,7 +6,7 @@ interface Props {
 
 function AlbumPopularity(props: Props) {
     return <div id="popularityLabel" className="sectionItem">
-        <Bar value={props.popularity} />
+        <Bar title='popularity' value={props.popularity} />
         <div>popularity</div>
     </div>;
 }

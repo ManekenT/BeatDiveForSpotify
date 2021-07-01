@@ -1,6 +1,5 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import { useEffect, useState } from 'react';
-import ContentHeader from '../../container/contentHeader/contentHeader';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 
 const spotifyApi = new SpotifyWebApi();
@@ -32,9 +31,7 @@ function PlaylistPage(props: Props) {
     if (playlist === undefined) {
         return null;
     }
-    return <div className="contentContainer">
-        <ContentHeader title={playlist.name} imageUrl={playlist.images[0].url} contentType='playlist' />
-    </div>;
+    return null;
 }
 
 export default withRouter(PlaylistPage);

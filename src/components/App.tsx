@@ -2,7 +2,7 @@ import React from 'react';
 import Cookies from 'js-cookie';
 import SpotifyWebApi from 'spotify-web-api-js';
 import './App.css';
-import Header from './header/header';
+import { Header } from './header/header';
 import TrackPage from './trackPage/trackPage';
 import AlbumPage from './albumPage/albumPage';
 import PlaylistPage from './playlistPage/playlistPage';
@@ -14,6 +14,8 @@ import MarkedText from '../container/markedText/markedText';
 import { Switch, Route, useHistory, useLocation } from 'react-router-dom'
 import { parseFragment } from '../lib/util';
 import Vibrant from 'node-vibrant';
+import spotifyLogoWhite from '../res/Spotify_Logo_RGB_White.png'
+import spotifyLogoBlack from '../res/Spotify_Logo_RGB_Black.png'
 
 const spotifyApi = new SpotifyWebApi();
 const clientId = '003e1f0c81d54149b97761a80f6a7270';
@@ -79,13 +81,7 @@ export function App() {
     }
 
     function loadCurrentUser() {
-        spotifyApi.getMe({}, (error, user) => {
-            if (error) {
-                handleApiError(error);
-                return;
-            }
-            loadContent(user.id, 'user');
-        });
+        history.push('/me');
     }
 
     function imageLoaded(imageUrl: string) {
@@ -103,10 +99,22 @@ export function App() {
                 root.style.setProperty('--color-primary', swatch.hex);
                 root.style.setProperty('--color-secondary', swatch.hex);
                 root.style.setProperty('--color-text', swatch.titleTextColor);
+                let logo = document.getElementById('spotifyLogo') as HTMLImageElement;
+                if (logo) {
+                    if (swatch.titleTextColor === '#fff') {
+                        logo.src = spotifyLogoWhite;
+                    } else {
+                        logo.src = spotifyLogoBlack;
+                    }
+                }
             } else {
                 root.style.setProperty('--color-primary', root.style.getPropertyValue('--color-primary-default'));
                 root.style.setProperty('--color-secondary', root.style.getPropertyValue('--color-secondary-default'));
                 root.style.setProperty('--color-text', root.style.getPropertyValue('--color-text-default'));
+                let logo = document.getElementById('spotifyLogo') as HTMLImageElement;
+                if (logo) {
+                    logo.src = spotifyLogoWhite;
+                }
             }
         });
     }
@@ -178,14 +186,14 @@ export function App() {
             <Route path="/album/:id">
                 <AlbumPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
-            <Route path="/user/:id">
-                <UserPage imageLoaded={imageLoaded} error={handleApiError} />
-            </Route>
             <Route path="/playlist/:id">
                 <PlaylistPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/artist/:id">
                 <ArtistPage imageLoaded={imageLoaded} error={handleApiError} />
+            </Route>
+            <Route path="/me">
+                <UserPage imageLoaded={imageLoaded} error={handleApiError} />
             </Route>
             <Route path="/loginAppeal">
                 <TextOverlay>
@@ -201,11 +209,20 @@ export function App() {
                     Thanks!
                 </TextOverlay>
             </Route>
-            <Route path="/">
+            <Route exact path="/">
                 <TextContainer>
                     Drag and drop a Spotify link over here. Artist, user, song, playlist or album!
                 </TextContainer>
             </Route>
+            <Route path="/">
+                <TextContainer>
+                    The content you dropped is not supported (yet).
+                </TextContainer>
+            </Route>
         </Switch>
+        <div className='fixed bottom-4 right-6 flex items-center space-x-4 text-lg'>
+            <div className=''>content provided by</div>
+            <img id='spotifyLogo' src={spotifyLogoWhite} alt='spotify' className='w-20' />
+        </div>
     </div>;
 }

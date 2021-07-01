@@ -1,0 +1,4 @@
+.image-border {
+    border-color: var(--color-text);
+    @apply border-4;
+}

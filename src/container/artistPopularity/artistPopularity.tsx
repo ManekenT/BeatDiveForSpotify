@@ -10,7 +10,7 @@ function ArtistPopularity(props: Props) {
         <div>
             {props.followers} followers and
         </div>
-        <Bar value={props.popularity} />
+        <Bar title='popularity' value={props.popularity} />
         <div>popularity</div>
     </div>;
 }

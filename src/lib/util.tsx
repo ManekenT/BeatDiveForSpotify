@@ -38,3 +38,15 @@ export const getKey = (number: number) => {
 export const getMode = (number: number) => {
     return modes[number];
 }
+
+export const scaleLoudness = (db: number) => {
+    if (db > 0) {
+        db = 0;
+    }
+    if (db < -60) {
+        db = -60;
+    }
+    db = db * 100 / 60;
+    db = db * -1;
+    return 100 - db;
+}

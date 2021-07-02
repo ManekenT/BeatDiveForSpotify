@@ -1,5 +1,4 @@
 import { getKey, getMode, msToDuration } from '../../lib/util';
-import './track.css';
 
 interface Props {
     track: SpotifyApi.TrackObjectFull

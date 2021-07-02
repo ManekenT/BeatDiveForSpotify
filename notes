@@ -1,0 +1,26 @@
+HEADER
+name
+artist
+album
+
+MAIN INFOS
+duration ms
+key + mode
+bpm
+time signature
+explicit
+
+
+AUDIO FEATURES
+popularity
+audio features
+
+AUDIO ANALYSIS
+audio analysis X
+
+RECOMMENDATIONS
+
+OTHER
+available markets X
+external urls
+external_ids

@@ -1,8 +1,0 @@
-.bar-container {
-    border-color: var(--color-text);
-    @apply border-4;
-}
-
-.bar {
-    background-color: var(--color-text);
-}

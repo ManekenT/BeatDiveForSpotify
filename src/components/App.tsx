@@ -1,4 +1,3 @@
-import React from 'react';
 import Cookies from 'js-cookie';
 import SpotifyWebApi from 'spotify-web-api-js';
 import './App.css';
@@ -27,14 +26,14 @@ export function App() {
     let history = useHistory();
     let location = useLocation();
 
-    const processDroppedContent = (e: React.DragEvent<HTMLDivElement>) => {
+    const processDroppedContent = (e: DragEvent) => {
         e.preventDefault();
         if (e.dataTransfer !== null) {
             processUrl(e.dataTransfer.getData('text'));
         }
     }
 
-    function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+    function onDragOver(e: DragEvent) {
         e.preventDefault();
     }
 
@@ -149,6 +148,9 @@ export function App() {
         window.location.href = 'https://accounts.spotify.com/authorize?client_id=' + clientId + '&redirect_uri=' + window.location.origin + '&response_type=token&scope=' + userScopes + '&state=' + encodeURIComponent(window.location.pathname);
     }
 
+    document.body.ondrop = processDroppedContent;
+    document.body.ondragover = onDragOver
+
     let authCode = Cookies.get(authCookie)
     console.log("Found cookie: " + authCode);
     let { access_token, state } = parseFragment(location.hash);
@@ -169,7 +171,7 @@ export function App() {
         authorize();
     }
 
-    return <div onDrop={processDroppedContent} onDragOver={onDragOver}>
+    return <>
         <Header
             loadSong={loadCurrentSong}
             loadArtist={loadCurrentArtist}
@@ -224,5 +226,5 @@ export function App() {
             <div className=''>content provided by</div>
             <img id='spotifyLogo' src={spotifyLogoWhite} alt='spotify' className='w-20' />
         </div>
-    </div>;
+    </>;
 }

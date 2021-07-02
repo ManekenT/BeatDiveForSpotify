@@ -25,7 +25,7 @@ function IdCollection(props: Props) {
             </div>
         );
     }
-    return <div className="sectionItem">
+    return <div className="text-3xl">
         {idComponents}
     </div>;
 }

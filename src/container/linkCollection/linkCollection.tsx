@@ -3,8 +3,8 @@ interface Props {
 }
 
 function LinkCollection(props: Props) {
-    return <div>
-        <a href={props.urls.spotify} >
+    return <div className='text-3xl'>
+        <a className='underline' href={props.urls.spotify} >
             spotify
         </a>
     </div>;

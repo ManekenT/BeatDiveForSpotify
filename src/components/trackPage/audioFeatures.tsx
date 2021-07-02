@@ -1,4 +1,5 @@
 import Bar from "../../container/bar/bar";
+import { scaleLoudness } from "../../lib/util";
 
 interface Props {
     track: SpotifyApi.TrackObjectFull
@@ -15,6 +16,6 @@ export function AudioFeatures(props: Props) {
         <Bar title='instrumentalness' value={props.audioFeatures.instrumentalness * 100} />
         <Bar title='liveness' value={props.audioFeatures.liveness * 100} />
         <Bar title='speechiness' value={props.audioFeatures.speechiness * 100} />
-        <Bar title='loudness' value={props.audioFeatures.loudness} />
+        <Bar title='loudness' value={scaleLoudness(props.audioFeatures.loudness)} />
     </div>;
 }

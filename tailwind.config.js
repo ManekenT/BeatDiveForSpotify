@@ -1,5 +1,3 @@
-const colors = require('tailwindcss/colors');
-
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   darkMode: false, // or 'media' or 'class'
@@ -9,7 +7,9 @@ module.exports = {
       serif: ['Arvo', 'serif'],
     },
     colors: {
-      gray: colors.gray,
+      "primary-color": "var(--color-primary)",
+      "secondary-color": "var(--color-primary)",
+      "text-color": "var(--color-text)"
     },
     extend: {
       transitionProperty: {
@@ -19,7 +19,9 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      scale: ['group-hover'],
+    },
   },
   plugins: [],
 }

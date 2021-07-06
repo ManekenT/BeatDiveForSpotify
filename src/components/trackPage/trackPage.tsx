@@ -58,6 +58,13 @@ function TrackPage(props: Props) {
         });
     }, [props]);
 
+    function trackClicked(track: SpotifyApi.TrackObjectFull) {
+        spotifyApi.play({
+            uris: [track.uri]
+        });
+        props.history.push('/track/' + track.id);
+    }
+
     if (track === undefined || audioFeatures === undefined || recommendations === undefined) {
         return null;
     }
@@ -67,7 +74,7 @@ function TrackPage(props: Props) {
         <Seperator title='audio features' />
         <AudioFeatures track={track} audioFeatures={audioFeatures} />
         <Seperator title='recommendations' />
-        <TrackCollection tracks={recommendations.tracks}></TrackCollection>
+        <TrackCollection tracks={recommendations.tracks} clicked={trackClicked}></TrackCollection>
         <Seperator title='other' />
         <IdCollection ids={track.external_ids} />
         <LinkCollection urls={track.external_urls} />
